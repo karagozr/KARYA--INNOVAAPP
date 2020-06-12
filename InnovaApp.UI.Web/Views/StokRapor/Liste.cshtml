@@ -1,0 +1,291 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model InnovaApp.UI.Web.Models.StokRapor.StokAraModel;
+
+<link href="/modules/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet" />
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="card">
+                <header class="card-header bg-info">
+                    <a href="#" data-toggle="collapse" data-target="#filter-area" aria-expanded="false" style="color:black" class="">
+                        <i class="icon-action fa fa-chevron-down"></i>
+                        <span class="title">FİLTRE</span>
+                    </a>
+                </header>
+                <div class="collapse show" id="filter-area">
+                    <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                        <form id="stokRaporListeFilteForm" method="get">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="stokAdi">Stok Adı</label>
+                                        <input id="stokAdi" name="stokAdi" class="form-control" placeholder="Stok adı...">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="stokKodu">Stok Kodu</label>
+                                        <input id="stokKodu" name="stokKodu" class="form-control" placeholder="Stok kodu...">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="stokGrup">Grup Kodu</label>
+                                        <select id="stokGrup" name="grup" class="arama form-control">
+                                            <option value="">
+                                                -----seç-----
+                                            </option>
+                                            @foreach (var item in Model.StokGruplar)
+                                            {
+                                                <option value="@item.GrupKodu">
+                                                    @item.GrupIsim
+                                                </option>
+
+                                            }
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="stokKod1">Stok Kodu-1</label>
+                                        <select id="stokKod1" name="kod1" class="arama form-control">
+                                            <option value="">
+                                                -----seç-----
+                                            </option>
+                                            @foreach (var item in Model.StokKodlar1)
+                                            {
+                                                <option value="@item.GrupKodu">
+                                                    @item.GrupIsim
+                                                </option>
+
+                                            }
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="stokKod2">Stok Kodu-2</label>
+                                        <select id="stokKod2" name="kod2" class="arama form-control">
+                                            <option value="">
+                                                -----seç-----
+                                            </option>
+                                            @foreach (var item in Model.StokKodlar2)
+                                            {
+                                                <option value="@item.GrupKodu">
+                                                    @item.GrupIsim
+                                                </option>
+
+                                            }
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="stokKod3">Stok Kodu-3</label>
+                                        <select id="stokKod3" name="kod3" class="arama form-control">
+                                            <option value="">
+                                                -----seç-----
+                                            </option>
+                                            @foreach (var item in Model.StokKodlar3)
+                                            {
+                                                <option value="@item.GrupKodu">
+                                                    @item.GrupIsim
+                                                </option>
+
+                                            }
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="stokKod4">Stok Kodu-4</label>
+                                        <select id="stokKod4" name="kod4" class="arama form-control">
+                                            <option value="">
+                                                -----seç-----
+                                            </option>
+                                            @foreach (var item in Model.StokKodlar4)
+                                            {
+                                                <option value="@item.GrupKodu">
+                                                    @item.GrupIsim
+                                                </option>
+
+                                            }
+                                        </select>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </form>
+                    </article>
+                </div>
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-success" onclick="stokAra()" style="width:100px;"><i class="fas fa-search"></i> Ara </button>
+                    <button type="submit" class="btn btn-secondary" onclick="filtreTemizle()" style="width:100px;"><i class="fas fa-eraser"></i> Temizle </button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-10">
+            <div class="card">
+                <header class="card-header bg-secondary">
+                    <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                        <i class="icon-action fa fa-chevron-down"></i>
+                        <span class="title">STOK ARAMA SONUÇLARI</span>
+                    </a>
+                </header>
+                <div class="collapse show" id="list-area" style="">
+                    <article class="card-body">
+                        <div class="table-responsive text-nowrap">
+                            <table id="tableStokBakiyeliListe" class="table table-bordered table-striped table-condensed cf">
+                                <thead>
+                                    <tr>
+                                        <th>Sıra</th>
+                                        <th>Kodu</th>
+                                        <th>Stok Adı</th>
+                                        <th>Birim</th>
+                                        <th>Miktar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBodyStokBakiyeliListe">
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Sıra</th>
+                                        <th>Kodu</th>
+                                        <th>Stok Adı</th>
+                                        <th>Birim</th>
+                                        <th>Miktar</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+
+
+                    </article> <!-- card-body.// -->
+                </div> <!-- collapse .// -->
+            </div> <!-- card.// -->
+        </div>
+    </div>
+
+    @*<div class="row">
+            <div class="col-md-1">
+                <input id="donemSession" value="@Context.Session.GetString("Donem")" type="hidden">
+                <div class="form-group">
+                    <div class="form-group">
+                        <select id="donem" name="CariRaporListeFiltreModel.Donem" class="form-control">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button id="btnCariListele" name="btnCariListele" type="submit" class="btn btn-success" onclick="cariBakiyeliListele()" style="width:100px;"><i class="fas fa-search"></i> Listele </button>
+
+            </div>
+        </div>*@
+
+
+    
+</section>
+
+
+
+
+
+<script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
+
+<script type="text/javascript">
+
+
+
+    $(document).ready(function () {
+        console.log("stok rapor liste çalışıyor.");
+        
+    });
+
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+
+
+    function stokAra() {
+
+
+        waitingDialog.show('Listeleniyor...');
+
+        var filterData = $('#stokRaporListeFilteForm').serialize();
+
+        console.log(filterData);
+
+        $.get("/StokRapor/StokBakiyeliListesi", filterData, DataBind);
+
+        $('#tableStokBakiyeliListe').dataTable().fnDestroy();
+        $("#tableBodyStokBakiyeliListe").empty();
+        function DataBind(liste) {
+            console.log(liste);
+            var SetData = $('#tableBodyStokBakiyeliListe');
+
+            for (var i = 0; i < liste.length; i++) {
+                var Data = "<tr class='row_" + i + "'>" +
+                     "<td>"+(i+1)+"</td>"+
+                     "<td>"+liste[i].stokKodu+"</td>"+
+                     "<td>"+liste[i].stokAdi+"</td>"+
+                     "<td>"+liste[i].olcuBr+"</td>"+
+                     "<td>"+liste[i].miktar+"</td>"+
+                    "</tr>";
+                SetData.append(Data);
+                $("#LoadingStatus").html("  ");
+            }
+
+            $('#tableStokBakiyeliListe').DataTable({
+                "language": {
+                    "lengthMenu": "Her sayfada _MENU_ kayıt",
+                    "zeroRecords": "Kayıt bulunamadı",
+                    "info": "Sayfa : _PAGE_ / _PAGES_",
+                    "sSearch": "Listede Ara : ",
+                    "filter": "Ara",
+                    "infoEmpty": "Kayıt yok",
+                    "infoFiltered": "(Filtrelenen toplam kayıt _MAX_)",
+                    "oPaginate": {
+                        "sFirst": "İlk Kayıt",
+                        "sPrevious": "Önceki",
+                        "sNext": "Sonraki",
+                        "sLast": "Son Kayıt"
+                    }
+                }
+            });
+            $('.dataTables_length').addClass('bs-select');
+
+
+        }
+        setTimeout(function () { waitingDialog.hide(); }, 2000);
+    }
+
+    function filtreTemizle() {
+        $('#stokRaporListeFilteForm').trigger("reset");
+
+    }
+
+
+    
+
+</script>

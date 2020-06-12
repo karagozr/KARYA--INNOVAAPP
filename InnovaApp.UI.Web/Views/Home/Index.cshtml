@@ -1,0 +1,114 @@
+﻿@using Microsoft.AspNetCore.Http;
+
+
+<!-- Add icons to the links using the .nav-icon class
+with font-awesome or any other icon font library -->
+
+@if (Context.Session.GetInt32("CariRapor") == 1)
+{
+    <div class="text-center">
+        <a class="btn btn-info" style="width:200px;" href="/CariRapor/Liste">
+            <i class="nav-icon fas fa-pray"> Cari Rapor</i>
+        </a>
+    </div>
+
+}
+
+<br />
+
+@if (Context.Session.GetInt32("WebTeklif") == 1)
+{
+    <div class="text-center">
+        <a class="btn btn-info" style="width:200px;" href="/FideSiparis/Liste">
+            <i class="fas fa-edit"> Teklif İşlem</i>
+        </a>
+    </div>
+
+}
+<br />
+@if (Context.Session.GetInt32("WebSiparis") == 1)
+{
+    <div class="text-center">
+        <a class="btn btn-info" style="width:200px;" href="/FideSiparis/SiparisListe">
+            <i class="fas fa-shuttle-van"> Siparis İşlem</i>
+        </a>
+    </div>
+
+}
+<br />
+@if (Context.Session.GetInt32("WebIsAkis") == 1)
+{
+    <div class="text-center">
+        <a class="btn btn-info" style="width:200px;" href="/IsAkis/Liste">
+            <i class="far fa-paper-plane"> İş Akış Listesi</i>
+        </a>
+    </div>
+
+}
+<br />
+@if (Context.Session.GetInt32("StokRapor") == 1)
+{
+    <div class="text-center">
+        <a class="btn btn-info" style="width:200px;" href="/StokRapor/Liste">
+            <i class="fas fa-box"> Stok Rapor</i>
+        </a>
+    </div>
+
+}
+@*<link href="/modules/Select2/select2.css" rel="stylesheet" />
+
+
+    <select name="siteID" id="siteID" class="abcd" style="width:100%">
+        <option value='0' selected='selected'> Not associated to any Circuit ID </option>
+        <option value='2101'> 1007345136 </option>
+        <option value='2102'> 1007921321 </option>
+        <option value='2103'> 1007987235 </option>
+        <option value='2407'> 132 </option>
+        <option value='2408'> 141 </option>
+        <option value='2409'> 142 </option>
+        <option value='2410'> 145 </option>
+        <option value='2701'> 225 </option>
+        <option value='2702'> 248 </option>
+        <option value='2703'> 251 </option>
+        <option value='2704'> 254 </option>
+        <option value='2705'> 264 </option>
+        <option value='1804'> 27 </option>
+        <option value='2706'> 274 </option>
+        <option value='2707'> 310 </option>
+        <option value='2708'> 311 </option>
+        <option value='3001'> 333 </option>
+        <option value='2401'> 38 </option>
+        <option value='2402'> 64 </option>
+        <option value='2403'> 68 </option>
+        <option value='2404'> 69 </option>
+        <option value='2405'> 76 </option>
+        <option value='2406'> 81 </option>
+        <option value='2411'> abc123post </option>
+        <option value='3301'> circuit id 50 </option>
+        <option value='2105'> fadhil </option>
+        <option value='2104'> faisal </option>
+        <option value='3002'> IPEN - SITE TEST </option>
+        <option value='3601'> Manual Circuit ID </option>
+        <option value='3302'> new circuit id fadhil </option>
+        <option value='1809'> try iframe </option>
+    </select>
+
+    <select class="js-example-basic-single" name="state">
+        <option value="AL">Alabama</option>
+        <option value="WY">Wyoming</option>
+    </select>
+
+    <script src="/modules/Select2/select2.js"></script>
+
+    <script>
+        $(function () {
+            $("select").select2();
+        });
+
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2();
+        });
+
+
+    </script>*@
+

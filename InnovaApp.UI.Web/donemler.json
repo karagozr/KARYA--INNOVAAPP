@@ -1,0 +1,18 @@
+[
+  {
+    "name": "BUYIL",
+    "dbconnection": "Persist Security Info=True;Data Source=.;Initial Catalog=ADEN2019;User ID=sa;Password=1234"
+  },
+  {
+    "name": "2020",
+    "dbconnection": "Persist Security Info=True;Data Source=.;Initial Catalog=ADEN2019;User ID=sa;Password=1234"
+  },
+  {
+    "name": "2019",
+    "dbconnection": "Persist Security Info=True;Data Source=.;Initial Catalog=ADEN2019;User ID=sa;Password=1234"
+  },
+  {
+    "name": "2018",
+    "dbconnection": "Persist Security Info=True;Data Source=.;Initial Catalog=ADEN2019;User ID=sa;Password=1234"
+  }
+]

@@ -1,0 +1,96 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+
+<html class="fixed sidebar-left-collapsed">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>INNOVA</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- overlayScrollbars -->
+    <link href="/modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/StyleSheet.css" rel="stylesheet" />
+    <link href="~/css/adminlte.css" rel="stylesheet" />
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+
+
+    <!-- jQuery -->
+    <script src="/modules/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="/modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/modules/moment/moment.js"></script>
+
+    <script src="~/js/jquery.inputpicker.js"></script>
+    <script src="/modules/bootstrap-waitingfor/build/bootstrap-waitingfor.js"></script>
+    <script src="/modules/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
+
+    <!-- AdminLTE App -->
+    <script src="~/js/adminlte.js"></script>
+    <script src="~/js/TalepListe/talepListe.js"></script>
+</head>
+<body class="sidebar-mini sidebar-collapse">
+    <!-- Site wrapper -->
+    <div  class="wrapper">
+        <!-- Navbar -->
+        <partial name="_dashboardMenu" />
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        @*<div class="col-sm-6">
+                            <h3>Blank Page</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item active">Blank Page</li>
+                            </ol>
+                        </div>*@
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+
+            @RenderBody()
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-block">
+                <b>Sürüm</b> 1.00
+            </div>
+            <strong>Copyright &copy; 2016-2019 <a href="http://karagooz.com">KARYA</a>.</strong> Tüm hakları saklıdır.
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    
+</body>
+</html>
+
+
+

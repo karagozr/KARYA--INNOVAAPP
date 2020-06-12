@@ -1,0 +1,17 @@
+﻿.pt-100 {
+    padding-top: 100px;
+}
+.suggestions {
+    border: 1px solid #CCC;
+    background-color: #FFF;
+    width: 300px;
+    z-index: 1;
+    position: absolute;
+    top: 30px;
+    left: 15px
+}
+
+.suggest-grid tr.active td {
+    background-color: #777 !important;
+    color: #FFF
+}

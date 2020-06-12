@@ -1,0 +1,268 @@
+﻿@using Microsoft.AspNetCore.Http;
+<link href="/modules/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet" />
+
+<section class="content">
+    @*<div class="card">
+        <header class="card-header bg-info">
+            <a href="#" data-toggle="collapse" data-target="#filter-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">FİLTRE</span>
+            </a>
+        </header>
+        <div class="collapse show" id="filter-area">
+            <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                <form id="cariRaporListeFilteForm" method="get">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <input id="donemSession" value="@Context.Session.GetString("Donem")" type="hidden">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <select id="donem" name="CariRaporListeFiltreModel.Donem" class="form-control">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                                <div class="form-group">
+                                    <input id="cariAdi" name="CariRaporListeFiltreModel.CariAdi" class="form-control" placeholder="Cari adı...">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select id="cariGrup" name="CariRaporListeFiltreModel.CariGrupKod" class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <select id="cariRaporKod" name="CariRaporListeFiltreModel.CariRaporKod" class="form-control">
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input id="minBakiye" name="CariRaporListeFiltreModel.MinBakiye" class="form-control" type="number" placeholder="Min. bakiye...">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input id="maxBakiye" name="CariRaporListeFiltreModel.MaxBakiye" class="form-control" type="number" placeholder="Maks. bakiye...">
+                                </div>
+                            </div>
+                    </div>
+                </form>
+            </article>
+        </div>
+
+        <div class="card-footer">
+            <button id="btnCariListele" name="btnCariListele" type="submit" class="btn btn-success" onclick="cariBakiyeliListele()" style="width:100px;"><i class="fas fa-search"></i> Listele </button>
+            <button type="submit" name="submit" value="search" id="submit" class="btn btn-secondary" onclick="cariBakiyeliFiltreTemizle()" style="width:100px;"><i class="fas fa-eraser"></i> Temizle </button>
+        </div>
+    </div>*@
+    
+    <div class="row">
+        <div class="col-md-1">
+            <input id="donemSession" value="@Context.Session.GetString("Donem")" type="hidden">
+            <div class="form-group">
+                <div class="form-group">
+                    <select id="donem" name="CariRaporListeFiltreModel.Donem" class="form-control">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <button id="btnCariListele" name="btnCariListele" type="submit" class="btn btn-success" onclick="cariBakiyeliListele()" style="width:100px;"><i class="fas fa-search"></i> Listele </button>
+            
+        </div>
+    </div>
+    
+
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">CARİ LİSTE</span>
+            </a>
+        </header>
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableCariBakiyeliListe" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>Cari Adı</th>
+                                <th style="width:130px;">Bakiye</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyCariBakiyeliListe">
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Cari Adı</th>
+                                <th>Bakiye</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+
+
+            </article> <!-- card-body.// -->
+        </div> <!-- collapse .// -->
+    </div> <!-- card.// -->
+</section>
+
+
+
+
+
+<script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
+
+<script type="text/javascript">
+
+
+
+    $(document).ready(function () {
+        console.log("Cari rapor liste çalışıyor.");
+        filtreVerileriniDoldur();
+        cariBakiyeliListele();
+    });
+
+    function filtreVerileriniDoldur() {
+
+        $.get("/CariRapor/BakiyeliCariFiltreVerileri", null, DataBind);
+        function DataBind(filtreData) {
+            var str = "<option value=''>Cari Grup Seç</option>";
+            var cariGrupData = filtreData.cariGrup;
+            console.log(cariGrupData);
+            for (var i = 0; i < cariGrupData.length; i++) {
+
+                if (cariGrupData[i].grupKod != '') {
+                    str += "<option value='" + cariGrupData[i].grupKod + "'>" + cariGrupData[i].grupIsim + "</option>";
+                }
+
+            }
+            $("#cariGrup").append(str);
+
+            var str1 = "<option value=''>Cari Rapor Kodu Seç</option>";
+            var cariRaporKodData = filtreData.cariRaporKod;
+            console.log(cariRaporKodData);
+            for (var i = 0; i < cariRaporKodData.length; i++) {
+                if (cariRaporKodData[i].raporKod != '') {
+                    str1 += "<option value='" + cariRaporKodData[i].raporKod + "'>" + cariRaporKodData[i].raporKod + "</option>";
+                }
+            }
+            $("#cariRaporKod").append(str1);
+
+            var str2 = "";
+            var donemListe = filtreData.donemler;
+            console.log(donemListe)
+            for (var i = 0; i < donemListe.length; i++) {
+                if (donemListe[i] != '') {
+                    str2 += "<option value='" + donemListe[i] + "'>" + donemListe[i] + "</option>";
+                }
+            }
+            $("#donem").append(str2);
+            var dnm = $("#donemSession").val();
+            if (dnm != "") {
+                $("#donem").val(dnm);
+            }
+            
+            
+        }
+
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+
+
+    function cariBakiyeliListele() {
+
+        var donemVar = localStorage['Donem'];
+        if (!donemVar) {
+
+            localStorage['Donem'] = $("#donem").find(':selected').val();
+        }
+
+        waitingDialog.show('Listeleniyor...');
+
+        var filterData = $('#cariRaporListeFilteForm').serialize();
+
+        $.get("/CariRapor/BakiyeliCariListe", filterData, DataBind);
+
+        $('#tableCariBakiyeliListe').dataTable().fnDestroy();
+        $("#tableBodyCariBakiyeliListe").empty();
+        function DataBind(liste) {
+            var SetData = $('#tableBodyCariBakiyeliListe');
+
+            for (var i = 0; i < liste.length; i++) {
+                var Data = "<tr class='row_" + i + "'>" +
+                    //"<td type='number'>" + (i + 1) + "</td>" +
+                    "<td>" + "<a href='/CariRapor/CariHaraket/?cariKodu=" + liste[i].cariKodu + "'>" + liste[i].cariAdi + "</a>" + "</td>" +
+                    "<td>" + (liste[i].bakiye).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                    "</tr>";
+                SetData.append(Data);
+                $("#LoadingStatus").html("  ");
+            }
+
+            $('#tableCariBakiyeliListe').DataTable({
+                "language": {
+                    "lengthMenu": "Her sayfada _MENU_ kayıt",
+                    "zeroRecords": "Kayıt bulunamadı",
+                    "info": "Sayfa : _PAGE_ / _PAGES_",
+                    "sSearch": "Bul : ",
+                    "filter": "Ara",
+                    "infoEmpty": "Kayıt yok",
+                    "infoFiltered": "(Filtrelenen toplam kayıt _MAX_)",
+                    "oPaginate": {
+                        "sFirst": "İlk Kayıt",
+                        "sPrevious": "Önceki",
+                        "sNext": "Sonraki",
+                        "sLast": "Son Kayıt"
+                    }
+                }
+            });
+            $('.dataTables_length').addClass('bs-select');
+
+
+        }
+        setTimeout(function () { waitingDialog.hide(); }, 2000);
+    }
+
+    function cariBakiyeliFiltreTemizle() {
+        $('#cariRaporListeFilteForm').trigger("reset");
+
+    }
+
+
+    $("#donem").on('change', function (e) {
+
+        var donem = $(this).find(':selected').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/CariRapor/Donem?donem=" + donem
+        })
+
+    });
+
+    /*
+     var yetVisited = localStorage['visited'];
+        if (!yetVisited) {
+        // open popup
+        localStorage['visited'] = "yes";
+        }
+     */
+
+</script>

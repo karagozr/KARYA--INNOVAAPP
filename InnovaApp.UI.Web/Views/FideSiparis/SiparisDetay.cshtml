@@ -1,0 +1,380 @@
+﻿@model InnovaApp.UI.Web.Models.FideSiparis.SiparisGirisModel
+
+<link href="/modules/Select2/select2.css" rel="stylesheet" />
+<style>
+    .error {
+        color: red;
+    }
+
+    #alan {
+        font-size: 1em !important;
+    }
+</style>
+
+<section class="content" id="alan">
+    <div class="card">
+        <header class="card-header bg-info">
+            <a href="#" data-toggle="collapse" data-target="#headerValues-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">SİPARİŞ BAŞLIK BİLGİLERİ</span>
+            </a>
+        </header>
+        <div class="collapse show" id="headerValues-area">
+            <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                <form id="cariRaporListeFilteForm" method="get">
+                    <div class="row">
+                        <input id="siparisBaslikGuid" class="form-control" type="hidden" value="">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="belgeNo">Belge No</label>
+                                <input id="belgeNo" class="form-control" value="@Model.SiparisBaslik.BelgeNo" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="tarih">SiparisTarih</label>
+                                <input id="tarih" type="datetime" class="form-control" value="@Model.SiparisBaslik.Tarih" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="cari">Cari Seç</label>
+                                <input id="cari" type="datetime" class="form-control" data-cariKodu="@Model.SiparisBaslik.CariKodu" value="@Model.SiparisBaslik.CariAdi" readonly="readonly">
+                                @*<select id="cariSec" name="cariSec" class="arama form-control">
+                    </select>*@
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="aciklama">Açıklama</label>
+                                <input id="aciklama" class="form-control" value="@Model.SiparisBaslik.Aciklama" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="siparisDurum">Sipariş Durum</label>
+                                <select id="siparisDurum" name="siparisDurum" class="form-control" readonly="readonly">
+                                    <option value="A">BEKLEMEDE</option>
+                                    <option value="B">ONAYLANDI</option>
+                                    <option value="C">İPTAL EDİLDİ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <input id="siparisBaslikGuid" class="form-control" type="hidden" value="">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="vergiDairesiNo">Vergi/TC No</label>
+                                <input id="vergiDairesiNo" class="form-control" value="@Model.SiparisBaslik.VergiDairesiNo" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="vergiDairesi">Vergi Dairesi</label>
+                                <input id="vergiDairesi" type="datetime" class="form-control" value="@Model.SiparisBaslik.VergiDairesi" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="Il">İl</label>
+                                <input id="Il"  class="form-control" value="@Model.SiparisBaslik.Il" readonly="readonly">
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="Ilce">İlçe</label>
+                                <input id="Ilce"  class="form-control" value="@Model.SiparisBaslik.Ilce" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="TelNo">Tel No</label>
+                                <input id="TelNo" class="form-control" value="@Model.SiparisBaslik.TelNo" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="vergiDairesi">E-Posta</label>
+                                <input id="vergiDairesi"  class="form-control" value="@Model.SiparisBaslik.Eposta" readonly="readonly">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </article>
+        </div>
+
+
+    </div>
+
+
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">KALEMLER</span>
+            </a>
+
+            @*@if (ViewBag.siparisDuzenleYetki)
+            {
+                <button id="btnKaydet" name="btnKaydet" type="submit" class="btn btn-info float-right" onclick="SiparisKaydet()" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Kaydet </button>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-info float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Kaydet </button>
+            }*@
+
+
+            @if (ViewBag.siparisOnayYetki)
+            {
+                <button id="btnIrsaliyeOnayla" name="btnIrsaliyeOnayla" class="btn btn-success float-right" onclick="IrsaliyeCevir('B')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> İrsaliye Et </button>
+            }
+            else
+            {
+                <button class="btn btn-success float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> İrsaliye Et </button>
+            }
+
+        </header>
+
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+
+
+                <div class="table-responsive text-nowrap">
+                    <table id="tableTalepSiparisStoklar" class="table table-bordered table-striped table-condensed cf">
+
+                        <thead>
+                            <tr>
+                                <th>Sevk Mik.</th>
+                                <th>Kalam Mik.</th>
+                                <th>Sıra</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>Birim</th>
+                                <th>Miktar</th>
+                                <th>Döviz</th>
+                                <th>Kur</th>
+                                <th>Birim Tutar</th>
+                                <th>Birim Tutar(Döviz)</th>
+                                <th>Top. Tutar(TL)</th>
+                                <th>Top. Tutar(Döviz)</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyTalepSiparisStoklar">
+                            @for (int i = 0; i < Model.SiparisDetay.Count; i++)
+                            {
+                            <tr>
+                                <td>
+                                    @if (@Model.SiparisDetay[i].SiparisKalanMiktar > 0)
+                                    {
+                                        <input id="irsaliyeMik_@Model.SiparisDetay[i].Sira" type="number" class="form-control miktarAlani" style="width:100px;" value="@String.Format("{0:#.##}", Model.SiparisDetay[i].SiparisKalanMiktar.ToString("F").Replace(',', '.'))">
+                                    }
+                                </td>
+                                <td id="kalanMik_@Model.SiparisDetay[i].Sira" value="@Model.SiparisDetay[i].SiparisKalanMiktar">@Convert.ToDouble(Model.SiparisDetay[i].SiparisKalanMiktar).ToString("F")</td>
+                                <td>@Model.SiparisDetay[i].Sira</td>
+                                <td>@Model.SiparisDetay[i].StokKodu</td>
+                                <td>@Model.SiparisDetay[i].StokAdi</td>
+                                <td>@Model.SiparisDetay[i].Birim</td>
+                                <td>@Convert.ToDecimal(Model.SiparisDetay[i].Miktar).ToString("F")</td>
+                                <td>@Model.SiparisDetay[i].DovizAdi</td>
+                                <td>@Convert.ToDecimal(Model.SiparisDetay[i].Kur).ToString("F")</td>
+                                <td>@Convert.ToDecimal(Model.SiparisDetay[i].BirimTutar).ToString("F")</td>
+                                <td>@Convert.ToDecimal(Model.SiparisDetay[i].BirimTutarDoviz).ToString("F")</td>
+                                <td>@Convert.ToDecimal(Model.SiparisDetay[i].ToplamTutar).ToString("F")</td>
+                                <td>@Convert.ToDecimal(Model.SiparisDetay[i].ToplamTutarDoviz).ToString("F")</td>
+                                <td>@Model.SiparisDetay[i].Aciklama</td>
+                                @*<td>
+                                    <a class='btn btn-warning' onClick='TekliFatura()'><i class='far fa-edit'></i> Ftr. Et</a>
+                                </td>*@
+                            </tr>
+                            }
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </article>
+        </div>
+    </div>
+ </section>
+
+<div class="modal fade" id="modalIrsaliye">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>İRSALİYE OLUŞTUR</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <div>
+                    <label for="irsaliyeNo">İrsaliye Numarası</label>
+                    <input id="irsaliyeNo" class="form-control" value="">
+                </div>
+                <div>
+                    <label for="aciklama2">Açıklama-1</label>
+                    <input id="aciklama2" class="form-control" value="">
+                </div>
+                <div>
+                    <label for="aciklama3">Açıklama-2</label>
+                    <input id="aciklama3" class="form-control" value="">
+                </div>
+                <div>
+                    <label for="aciklama4">Açıklama-3</label>
+                    <input id="aciklama4" class="form-control" value="">
+                </div>
+                <div>
+                    <label for="aciklama5">Açıklama-4</label>
+                    <input id="aciklama5" class="form-control" value="">
+                </div>
+            </div>
+            <div class="modal-footer">
+
+
+                <button type="button" data-dismiss="modal" class="btn btn-success" id="olustur">Oluştur</button>
+                <button type="button" data-dismiss="modal" class="btn btn-warning">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ <script src="/modules/jquery-validation/dist/jquery.validate.min.js"></script>
+ <script src="/modules/jquery-validation/dist/localization/messages_tr.min.js"></script>
+ <script src="/modules/jquery-validation/dist/additional-methods.min.js"></script>
+ <script src="/modules/Select2/select2.js"></script>
+ <script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
+
+ <script>
+     $(document).ready(function () {
+
+         $('#tableTalepSiparisStoklar').dataTable({
+             "paging": false,
+             "searching": false,
+             "ordering":false
+         });
+
+     });
+
+     function IrsaliyeCevir(kod) {
+        $('#modalIrsaliye').modal('toggle')
+            .on('click', '#olustur', function (e) {
+               
+                $.ajax({
+                    type: "POST",
+                    url: "/FideSiparis/IrsaliyeNumaraSorgula?irsaliyeNo="+irsaliyeNo,
+                    //data: ,
+                    success: function (result) {
+       
+                        console.log(result.durum);
+                        if (result.durum == 0) {
+                            IrsaliyeKaydet(irsaliyeNo);
+                        } else {
+                            alert("İrsaliye kodu daha önce kullanılmış !!!");
+                        }
+                    }
+                })
+
+            });
+     }
+
+     var irsaliyeNo = "";
+
+     $("#irsaliyeNo").on('change', function (e) {
+
+         var value = $("#irsaliyeNo").val();
+         var ek = "A";
+         if (value.length < 15) {
+             for (var i = 0; i < 14 - value.length; i++) {
+                 ek = ek + "0";
+             }
+         }
+
+         irsaliyeNo=ek+value;
+         $("#irsaliyeNo").val(ek+value);
+         
+
+     });
+
+        //public class IrsaliyeBilgilerModel
+        //{
+        //public string IrsaliyeNo { get; set; }
+        //public string BelgeNo { get; set; }
+        //public IrsaliyeDetayBilgilerModel IrsaliyeDetayBilgiler { get; set; }
+        //}
+        //
+        //public class IrsaliyeDetayBilgilerModel
+        //{
+        //public short Sira { get; set; }
+        //public double Miktar { get; set; }
+        //
+        //}
+
+     function IrsaliyeKaydet(irsaliyeNo) {
+         var belgeNo = $("#belgeNo").val();
+         var aciklama2 = $("#aciklama2").val();
+         var aciklama3 = $("#aciklama3").val();
+         var aciklama4 = $("#aciklama4").val();
+         var aciklama5 = $("#aciklama5").val();
+
+         var table = $('#tableTalepSiparisStoklar').DataTable();
+
+         var irsData = {
+             "IrsaliyeNo": irsaliyeNo,
+             "BelgeNo": belgeNo,
+             "Aciklama2":aciklama2,
+             "Aciklama3":aciklama3,
+             "Aciklama4":aciklama4,
+             "Aciklama5":aciklama5,
+             IrsaliyeDetayBilgiler:[]
+         }
+
+         for (var i = 1; i <= table.rows().count(); i++)
+         {
+             console.log("DIŞ :"+ $("#irsaliyeMik_" + i).val() + "-" + $("#kalanMik_" + i).text());
+
+             if ($("#irsaliyeMik_" + i).val() > 0) {
+                 console.log("1-IF :"+ $("#irsaliyeMik_" + i).val() + "-" + $("#kalanMik_" + i).text());
+                 if (parseFloat($("#irsaliyeMik_" + i).val().toString().replace('.', ',')) > parseFloat($("#kalanMik_" + i).text())) {
+                    console.log("KALAN :"+ $("#irsaliyeMik_" + i).val() + ">" + $("#kalanMik_" + i).text());
+                    alert("Kalan miktardan fazla irsaliye edilemez !!!");
+                    return;
+                 }
+
+                 var irsKalem = {
+                    "Sira": i,
+                    "Miktar": $("#irsaliyeMik_" + i).val().toString().replace('.', ','),
+                 }
+                 irsData.IrsaliyeDetayBilgiler.push(irsKalem);
+                 
+             }
+             
+         }
+
+         
+         waitingDialog.show('İrsaliyeye Çevriliyor...');
+         $.ajax({
+             type: "POST",
+             data: irsData,
+             url: "/FideSiparis/IrsaliyeKaydet",
+             success: function (result) {
+         
+                if (result.durum == "1") {
+                    alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                    window.location.href = "/FideSiparis/SiparisListe";
+                }
+         
+             }
+         })
+     }
+
+     
+ </script>

@@ -1,0 +1,406 @@
+﻿@using InnovaApp.UI.Web.Models.OgrenciServis
+@model OgrenciModel
+
+
+
+<link href="/modules/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet" />
+<style>
+    .error {
+    color:#FF0000;  /* red */
+    }
+</style>
+
+<section class="content">
+    <div class="card">
+        <header class="card-header bg-info">
+            <a href="#" data-toggle="collapse" data-target="#filter-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">FİLTRE</span>
+            </a>
+        </header>
+        <div class="collapse show" id="filter-area">
+            <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                <form id="ogrenciListeFilteForm" method="get">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="OkulListesi">Okul Seç</label>
+                                @Html.DropDownListFor(m => m.OkulId,
+                                Model.OkulListesi.Select(m => new SelectListItem
+                                {
+                                    Value = m.Id.ToString(),
+                                    Text = m.OkulAdi
+                                }),"Hepsi",
+                                new { @id = "OkulListesi", @class = "form-control selectpicker" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="ogrDurum">Durum</label>
+                                <select id="ogrDurum"  name="Durum" class="form-control">
+                                    <option selected value="true">Aktif</option>
+                                    <option value="false">Pasif</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </article>
+        </div>
+
+        <div class="card-footer">
+            <button id="btnOgrenciListele" form="ogrenciListeFilteForm" type="submit" class="btn btn-success" onclick="OgrenciListele()" style="width:100px;"><i class="fas fa-search"></i> Listele </button>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">ÖĞRENCİ LİSTESİ</span>
+            </a>
+            <a id="btnYeniOgrenci" name="btnYeniOgrenci" class="btn btn-primary float-right" onclick="YeniOgrenciEkle()" style="width:100px;"><i class="fas fa-plus"></i> Ekle </a>
+        </header>
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableOgrenciListe" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>SINIF</th>
+                                <th>OKUL</th>
+                                <th>TC NO</th>
+                                <th>ADI</th>
+                                <th>SOYADI</th>
+                                <th>BÖLGE</th>
+                                <th>ADRES</th>
+                                <th>KAYIT TAR.</th>
+                                <th>AÇIKLAMA</th>
+                                <th>DURUM</th>
+                                <th style="width:90px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyOgrenciListe">
+                            @foreach (var item in Model.OgrenciListesi)
+                            {
+                            <tr id="row_@item.Id">
+                                <td id="sinif_@item.Id">@item.Sinif</td>
+                                <td id="okulAdi_@item.Id">
+                                    <input type="hidden" id="okulId_@item.Id" value="@item.OkulId" />
+                                    @item.OkulAdi
+                                </td>
+                                <td id="ogrenciTcNo_@item.Id">@item.OgrenciTcNo</td>
+                                <td id="ogrenciAdi_@item.Id">@item.OgrenciAdi</td>
+                                <td id="ogrenciSoyadi_@item.Id">@item.OgrenciSoyadi</td>
+                                <td id="bolge_@item.Id">
+                                    <input type="hidden" id="bolgeId_@item.Id" value="@item.BolgeId" />
+                                    @item.BolgeAdi
+                                </td>
+                                <td id="adres_@item.Id">@item.Adres</td>
+                                <td id="kayitTarihi_@item.Id">@item.KayitTarihi</td>
+                                <td id="aciklama_@item.Id">@item.Aciklama</td>
+                                <td>
+                                    <input type="hidden" id="Durum_@item.Id" value=@(item.Durum ? "true" : "false")>
+                                    @if (item.Durum)
+                                    {<a>Aktif</a> }
+                                    else
+                                    { <a>Pasif</a>}
+                                </td>
+                                <td style="width:90px;">
+                                    <a class='btn btn-warning' onclick='OgrenciDuzenle(@item.Id)'><i class='far fa-edit'></i></a>
+                                    @if (item.Durum == true)
+                                    {
+                                        <a class='btn btn-danger' onclick='OgrenciPasifEt(@item.Id)'><i class='far fa-trash-alt'></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a class='btn btn-success' onclick='OgrenciAktifEt(@item.Id)'><i class="fas fa-recycle"></i></a>
+                                    }
+
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>SINIF</th>
+                                <th>OKUL</th>
+                                <th>TC NO</th>
+                                <th>ADI</th>
+                                <th>SOYADI</th>
+                                <th>BÖLGE</th>
+                                <th>ADRES</th>
+                                <th>KAYIT TAR.</th>
+                                <th>AÇIKLAMA</th>
+                                <th>DURUM</th>
+                                <th style="width:90px;"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+
+
+            </article> <!-- card-body.// -->
+        </div> <!-- collapse .// -->
+    </div> <!-- card.// -->
+</section>
+
+<div class="modal fade" id="ogrenciEkleDuzenleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="ModalTitle"></h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <form id="ogrenciEkleDuzenleForm" onsubmit="return false;">
+                    <fieldset id="okulEkleForm">
+                        @Html.HiddenFor(m => m.Ogrenci.Id, new { @id = "Id" })
+                        <div class="form-group">
+                            <label for="OkulSec">Okul Seç</label>
+                            @Html.DropDownListFor(m => m.Ogrenci.OkulId,
+                            Model.OkulListesi.Select(m => new SelectListItem
+                            {
+                                Value = m.Id.ToString(),
+                                Text = m.OkulAdi
+                            }),
+                            new { @id = "OkulId", @required = "required", @class = "form-control selectpicker" })
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="Sinif">Sınıf</label>
+                                    @Html.TextBoxFor(m => m.Ogrenci.Sinif, new { @id = "Sinif", @required = "required", @class = "form-control", @placeholder = "Sınıf" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                @*<div class="form-group">
+                                        <label style="display: block; text-align: center; line-height: 150%;" for="Durum">Durum</label>
+                                        @Html.CheckBoxFor(m => m.Ogrenci.Durum, new { @id = "Durum", @class = "form-control", @placeholder = "Durum" })
+                                    </div>*@
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="OgrenciTcNo">Öğrenci TC Numarası</label>
+                            @Html.TextBoxFor(m => m.Ogrenci.OgrenciTcNo, new { @id = "OgrenciTcNo", @required = "required", @class = "form-control", @placeholder = "Öğrenci TC" })
+                        </div>
+                        <div class="form-group">
+                            <label for="OgrenciAdi">Öğrenci Adı</label>
+                            @Html.TextBoxFor(m => m.Ogrenci.OgrenciAdi, new { @id = "OgrenciAdi", @required = "required", @class = "form-control", @placeholder = "Öğrenci Adı" })
+                        </div>
+                        <div class="form-group">
+                            <label for="OgrenciSoyadi">Öğrenci Soyadı</label>
+                            @Html.TextBoxFor(m => m.Ogrenci.OgrenciSoyadi, new { @id = "OgrenciSoyadi", @required = "required", @class = "form-control", @placeholder = "Öğrenci Soyadı" })
+                        </div>
+                        <div class="form-group">
+                            <label for="BolgeId">Öğrenci Bölge</label>
+                            @Html.DropDownListFor(m => m.Ogrenci.BolgeId,
+                            Model.OgreciBolgeListesi.Select(m => new SelectListItem
+                            {
+                                Value = m.Id.ToString(),
+                                Text = m.BolgeAdi
+                            }),
+                            new { @id = "BolgeId", @required = "required", @class = "form-control selectpicker" })
+                        </div>
+                        <div class="form-group">
+                            <label for="Adres">Adres</label>
+                            @Html.TextAreaFor(m => m.Ogrenci.Adres, new { @id = "Adres", @required = "required", @class = "form-control", @placeholder = "Adres..." })
+                        </div>
+                        <div class="form-group">
+                            <label for="KayitTarihi">Kayıt Tarihi</label>
+                            @Html.TextBoxFor(m => m.Ogrenci.KayitTarihi, new { @id = "KayitTarihi", @type = "date", @class = "form-control", @placeholder = "Kayıt tarihi..." })
+                        </div>
+                        <div class="form-group">
+                            <label for="Aciklama">Açıklama</label>
+                            @Html.TextAreaFor(m => m.Ogrenci.Aciklama, new { @id = "Aciklama", @class = "form-control", @placeholder = "Açıklama..." })
+                        </div>
+                        <div >
+                            <input type="submit" class="btn btn-block btn-danger" id="btnOgrenciEkleKaydet" onclick='OgrenciEkleDuzenleKaydet()' value="Kaydet" />
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ogrenciSilModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>ÖĞRENCİ PASİF ET</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <h3>Seçilen öğrenci tamamen silinmez. Pasif hale getirilir!!!</h3>
+                <input type="hidden" id="silinecekOgrenciId" name="silinecekOgrenciId" value="" />
+                <h4 id="silinenOgrenciAdi"></h4>
+                <h4 id="silinenOgrenciSoyadi"></h4>
+                <h4 id="silinenOgrenciTcNo"></h4>
+                <div>
+                    <a class="btn btn-block btn-warning" id="btnOgrenciEkleKaydet" onclick='OgrencPasifEtKaydet()'>Pasif Et</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
+@*<script src="/modules/jquery-form-validator/form-validator/jquery.form-validator.min.js"></script>*@
+<script src="/modules/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="/modules/jquery-validation/dist/localization/messages_tr.min.js"></script>
+<script src="/modules/jquery-validation/dist/additional-methods.min.js"></script>
+<script>
+    $("#ogrenciEkleDuzenleForm").validate({
+        rules: {
+            "Ogrenci.KayitTarihi": {
+                required: true,
+                date: true
+            }
+        }
+    });
+
+    $(document).ready(function () {
+
+        console.log("Ögrenci Liste çalışıyor.");
+        $('#tableOgrenciListe').DataTable({
+            "language": {
+                "lengthMenu": "Her sayfada _MENU_ kayıt",
+                "zeroRecords": "Kayıt bulunamadı - sorry baby",
+                "info": "Sayfa : _PAGE_ / _PAGES_",
+                "sSearch": "Bul : ",
+                "filter": "Ara",
+                "infoEmpty": "Kayıt yok",
+                "infoFiltered": "(Filtrelenen toplam kayıt _MAX_)",
+                "oPaginate": {
+                    "sFirst": "İlk Kayıt",
+                    "sPrevious": "Önceki",
+                    "sNext": "Sonraki",
+                    "sLast": "Son Kayıt"
+                }
+            }
+        });
+        $('.dataTables_length').addClass('bs-select');
+    });
+
+    function YeniOgrenciEkle() {
+        $("#ModalTitle").html("ÖĞRENCİ EKLE");
+        $("#ogrenciEkleDuzenleModal").modal();
+    }
+
+    function OgrenciDuzenle(id) {
+        $("#ModalTitle").html("ÖĞRENCİ EKLE");
+        $("#ogrenciEkleDuzenleModal").modal();
+        
+        
+        OgrenciGetir(id);
+    }
+
+    function OgrenciPasifEt(id) {
+        $("#ogrenciSilModal").modal();
+        
+        $("#silinecekOgrenciId").val(id);
+        $("#silinenOgrenciAdi").text("Adı...... : "+$("#ogrenciAdi_"+id).text());
+        $("#silinenOgrenciSoyadi").text("Soyadı. : "+$("#ogrenciSoyadi_"+id).text());
+        $("#silinenOgrenciTcNo").text("TC No.. : " + $("#ogrenciTcNo_" + id).text());
+        
+    }
+    function OgrenciAktifEt(id) {
+
+         $('#ogrenciSilModal').modal('toggle');
+        
+            $.ajax({
+                type: "Post",
+                url: "/Ogrenci/OgrenciAktifPasifEt?durum=true&id="+id,
+                success: function (result) {
+                    window.location.href = "/Ogrenci/OgrenciListe";
+                }
+            });
+        
+    }
+
+    function OgrenciEkleDuzenleKaydet() {
+        var data = $('#ogrenciEkleDuzenleForm').serialize();
+        console.log(data);
+        var validMi = $("#ogrenciEkleDuzenleForm").valid();
+        
+
+        if (validMi == true) {
+            $('#ogrenciEkleDuzenleModal').modal('toggle');
+        
+            $.ajax({
+                type: "Post",
+                url: "/Ogrenci/OgrenciEkleDuzenle",
+                data: data,
+                success: function (result) {
+                    window.location.href = "/Ogrenci/OgrenciListe";
+                }
+            });
+        }
+    }
+
+    function OgrencPasifEtKaydet() {
+        
+        var id = $("#silinecekOgrenciId").val();
+        console.log(id);
+         $('#ogrenciSilModal').modal('toggle');
+        
+            $.ajax({
+                type: "Post",
+                url: "/Ogrenci/OgrenciAktifPasifEt?durum=false&id="+id,
+                success: function (result) {
+                    window.location.href = "/Ogrenci/OgrenciListe";
+                }
+            });
+    }
+
+    function OgrenciGetir(id) {
+
+        $.get("/Ogrenci/OgrenciGetir?id="+id, null, DataBind);
+
+        function DataBind(data) {
+
+            console.log(data);
+
+            /*
+                aciklama: "2121212121"
+                adres: "212121212"
+                bolge: null
+                bolgeAdi: "bu ne aq"
+                bolgeId: 1
+                durum: true
+                guid: "8848836e-40bb-4fca-a0ca-65e423742f54"
+                id: 10
+                kayitTarihi: "2019-10-05T00:00:00"
+                ogrenciAdi: "12122"
+                ogrenciSoyadi: "2121221"
+                ogrenciTcNo: "121212"
+                okul: null
+                okulAdi: "ALANYA İÖK"
+                okulId: 1
+                sinif: "2"
+             */
+
+            $("#Id").val(data.id);
+            $("#Sinif").val(data.sinif);
+            $("#OkulId").val(data.okulId);
+            $("#OgrenciAdi").val(data.ogrenciAdi);
+            $("#OgrenciSoyadi").val(data.ogrenciSoyadi);
+            $("#OgrenciTcNo").val(data.ogrenciTcNo);
+            $("#BolgeId").val(data.bolgeId);
+            $("#Adres").val(data.adres);
+            $("#Aciklama").val(data.aciklama);
+            $("#KayitTarihi").val(data.kayitTarihi.split('T')[0]);
+            
+        }
+
+    }
+
+</script>

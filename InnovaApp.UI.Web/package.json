@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "devDependencies": {
+  },
+  "dependencies": {
+    "bootstrap": "4.3.1",
+    "jquery": "3.4.1",
+    "moment": "2.24.0",
+    "bootstrap-select": "1.13.10",
+    "popper.js": "1.12.9",
+    "mdbootstrap": "4.8.10",
+    "bootstrap-waitingfor": "1.2.7",
+    "bootstrap-datepicker": "1.9.0",
+    "jquery-validation": "1.19.1",
+    "jquery-mask-plugin": "1.14.16",
+    "Select2": "3.5.7"
+
+  }
+}
+

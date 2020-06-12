@@ -1,0 +1,283 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model InnovaApp.UI.Web.Controllers.IsAkisModel
+
+
+
+
+    <div class="accordion" id="accordionExample">
+
+        @foreach (var ust in Model.IsAkisUst)
+        {
+                <div class="card">
+                    <div class="card-header" id="@ust.BelgeNo">
+                        <h5 class="row">
+                            <button class="btn btn-block btn-link" type="button" data-toggle="collapse" data-target="#det_@ust.BelgeNo"  aria-expanded="true" aria-controls="collapseOne">
+                                <div class="row d-flex ">
+                                    <div class="col-12 d-flex">
+                                        <strong>@ust.BelgeNo </strong>     <strong style="color:maroon"> --  </strong>@ust.Tarih.ToString("dd-MM-yyyy")
+                                    </div>
+                                </div>
+                                <div class="row d-flex border-bottom">
+                                    <div class="col-12 d-flex">
+                                        @ust.Aciklama 
+                                    </div>
+                                </div>
+                                <div class="row d-flex">
+
+                                    <div class="col-6 col-md-3 d-flex">
+                                        <p class="mb-1">Nakit..........: @string.Format("{0:C}", ust.Nakit)</p>
+                                    </div>
+
+                                    <div class="col-6 col-md-3 d-flex">
+                                        <p class="mb-1">Havale....: @string.Format("{0:C}", ust.Havale)</p>
+                                    </div>
+
+                                    <div class="col-6 col-md-3 d-flex">
+                                        <p class="mb-1">Kredi Kartı.: @string.Format("{0:C}", ust.KrediKarti)</p>
+                                    </div>
+
+                                    <div class="col-6 col-md-3 d-flex">
+                                        <p class="mb-1">Çek.........: @string.Format("{0:C}", ust.Cek) </p>
+                                    </div>
+
+                                </div>
+
+                            </button>
+                        </h5>
+                        
+                    </div>
+
+                    <div id="det_@ust.BelgeNo" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div class="card-body">
+                            @foreach (var item in Model.IsAkisEmir)
+                            {
+                                if (item.BelgeNo == ust.BelgeNo)
+                                {
+                                    <div class="list-group-item list-group-item-action flex-column align-items-start" id="@item.AkisId" style="background-color:lightgray">
+                                        <div class="justify-content-between">
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                    <h5 class="mb-1">@item.CariIsim</h5>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                        <div class="row">
+                                            @if (Convert.ToInt32(item.Nakit) > 0)
+                                            {
+                                                <div class="col-md-3 col-sm-6">
+                                                    <p class="mb-1">Nakit        : @string.Format("{0:C}", item.Nakit)</p>
+                                                </div>
+
+                                            }
+                                            @if (Convert.ToInt32(item.Havale) > 0)
+                                            {
+                                                <div class="col-md-3 col-sm-6">
+                                                    <p class="mb-1">Havale       : @string.Format("{0:C}", item.Havale)</p>
+                                                </div>
+
+                                            }
+                                            @if (Convert.ToInt32(item.KrediKarti) > 0)
+                                            {
+                                                <div class="col-md-3 col-sm-6">
+                                                    <p class="mb-1">Kredi Kartı  : @string.Format("{0:C}", item.KrediKarti)</p>
+                                                </div>
+
+                                            }
+                                            @if (Convert.ToInt32(item.Cek) > 0)
+                                            {
+                                                <div class="col-md-3 col-sm-6">
+                                                    <p class="mb-1">Çek          : @string.Format("{0:C}", item.Cek) - (@item.CekVade?.ToString("dd-MM-yyyy")) </p>
+                                                </div>
+
+                                            }
+
+
+
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-5 col-sm-6">
+                                                <p class="mb-1">Not-1: @item.Aciklama</p>
+                                            </div>
+                                            <div class="col-md-5 col-sm-6">
+                                                <p class="mb-1">Not-2: @item.Aciklama2</p>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6">
+                                                <div class="small">
+                                                    <small>
+                                                        <small class="btn btn-success" onclick="islemOnayIptal(@item.Id,'O')">ONAYLA</small>
+                                                        <small class="btn btn-danger" onclick="islemOnayIptal(@item.Id,'R')">IPTAL ET</small>
+                                                    </small>
+
+                                                    <small class="dropdown">
+                                                        <small class="btn btn-info dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            DİĞER
+                                                        </small>
+                                                        <small class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                            <button class="dropdown-item" onclick="akisDetay(@item.AkisId)" type="button">AKIŞ DETAY</button>
+                                                            <button class="dropdown-item" onclick="belgeIndir(@item.AkisId)" type="button">BELGEYİ İNDİR(pdf)</button>
+                                                            <a class="dropdown-item" asp-controller="CariRapor" asp-action="CariHaraket" asp-route-cariKodu="ca kodu" type="button">CARİ HARAKET</a>
+                                                        </small>
+                                                    </small>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                        <small class="text-muted">İptal veya onaylama işlemleri geri alınamaz</small>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+         }
+    </div>
+
+
+
+<div class="modal fade" id="modalIslem">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>İŞLEM ONAYI</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                Seçilen işlem onaylansın mı?
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-warning" id="btnOnay">Onayla</button>
+                <button type="button" data-dismiss="modal" class="btn btn-danger">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAkisDetay">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>İŞ AKIŞ DETAY</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="tableIsAkisDetay" class="table table-bordered table-striped table-condensed cf">
+
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Kullanıcı</th>
+                                <th>İşlem Tar.</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyIsAkisDetay">
+                        </tbody>
+
+                    </table>
+                </div>
+                
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function islemOnayIptal(isAkisId, onayKod) {
+        console.log('---->' + isAkisId + '           ' + onayKod)
+        $('#modalIslem').modal('toggle')
+            .on('click', '#btnOnay', () => {
+                console.log(isAkisId + '           ' + onayKod)
+                $.ajax({
+                    type: "POST",
+                    url: "/IsAkis/OnayIptalIslem?akisId=" + isAkisId + "&islem=" + onayKod,
+                    success: function (result) {
+                        if (result.durum == -1) {
+                            alert("İşlem Sırasında hata oluştu");
+                            window.location.href = "/IsAkis/Liste";
+                        }
+                        else {
+                            window.location.href = "/IsAkis/Liste";
+                        }
+
+                    }
+                })
+
+            });
+    }
+
+    function belgeIndir(isAkisId) {
+        console.log("pdf indir")
+        
+    }
+
+    function akisDetay(akisId, akisKayitId) {
+        $("#tableBodyIsAkisDetay").empty();
+        isAkisDetayGetir(akisId, akisKayitId);
+        $('#modalAkisDetay').modal('toggle');
+
+    }
+
+    function isAkisDetayGetir(akisId, akisKayitId) {
+        $.get("/IsAkis/IsAkisDetay?akisId=" + akisId + "&akisKayitId" + akisKayitId, null, DataBind);
+
+        function DataBind(data) {
+
+            var SetData = $('#tableBodyIsAkisDetay');
+
+
+
+            /*
+             akis_Id: 1
+             durum: "O"
+             kayit_Tarihi: "2020-05-12T14:00:01.42"
+             kullanici: 1
+             kullanici_Adi: "Admin"
+             sira: 1
+             */
+
+            for (var i = 0; i < data.length; i++) {
+                console.log("sddsds")
+                var satir = "<tr id='row_" + i + "' value='" + i + "'>" +
+                    "<td >" + data[i].sira + "</td>" +
+                    "<td >" + data[i].kullanici_Adi + "</td>" +
+                    "<td >" + (data[i].kayit_Tarihi == "0001-01-01T00:00:00" ? "" : getFormattedDate(data[i].kayit_Tarihi)) + "</td>" +
+                    "<td >" + data[i].durum + "</td></tr>";
+
+                SetData.append(satir);
+            }
+
+        }
+
+        function getFormattedDate(date) {
+            //2019-01-01
+            let hours = date.substring(11, 13);
+            let minutes = date.substring(14, 16);
+            let year = date.substring(0, 4);
+            let month = date.substring(5, 7);
+            let day = date.substring(8, 10);
+            //console.log("Date : "+date)
+            //console.log("Gün : "+day)
+            //console.log("Ay : "+month)
+            //console.log(day + '.' + month + '.' + year)
+            return hours + ':' + minutes + ' - ' + day + '.' + month + '.' + year;
+
+        }
+
+    }
+
+
+</script>

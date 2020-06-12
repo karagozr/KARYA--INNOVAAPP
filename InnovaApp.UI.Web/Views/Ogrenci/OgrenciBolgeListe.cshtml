@@ -1,0 +1,131 @@
+﻿@using InnovaApp.UI.Web.Models.OgrenciServis
+@model OgrenciBolgeModel
+
+<section class="content">
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">ÖĞRENCİ BÖLGE LİSTESİ</span>
+            </a>
+            <a id="btnYeniBolge" name="btnYeniBolge" class="btn btn-primary float-right" onclick="YeniBolgeEkle()" style="width:100px;"><i class="fas fa-plus"></i> Ekle </a>
+        </header>
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableBolge" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>BOLGE ADI</th>
+                                <th>BOLGE KODU</th>
+                                <th>ACIKLAMA</th>
+                                <th style="width:100px;">DÜZENLE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyTalepSiparisStoklar">
+                            @foreach (var item in Model.OgrenciBolge)
+                            {
+                                <tr id="row_@item.Id">
+                                    <td id='BolgeAdi_@item.Id' style="padding-left:5px;">@item.BolgeAdi</td>
+                                    <td id='BolgeKodu_@item.Id' style="padding-left:5px;">@item.BolgeKodu</td>
+                                    <td id='Aciklama_@item.Id' style="padding-left:5px;">@item.Aciklama</td>
+                                    <td>
+                                        <a class='btn btn-warning' onclick='BolgeDuzenle(@item.Id)'><i class='far fa-edit'></i></a>
+                                        <a class='btn btn-danger' onclick='BolgeSil()'><i class='far fa-trash-alt'></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            </article> <!-- card-body.// -->
+        </div> <!-- collapse .// -->
+    </div> <!-- card.// -->
+</section>
+<div class="modal fade" id="bolgeEkleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="ModalTitle"></h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <form id="bolgeDuzenleForm">
+                    <fieldset id="okulEkleForm">
+                        <input type="hidden" id="Id" name="Id" class="form-control">
+                        <div class="form-group">
+                            <label for="BolgeAdi">Okul Adı</label>
+                            <input id="BolgeAdi" name="BolgeAdi" class="form-control" placeholder="Bolge adı...">
+                        </div>
+                        <div class="form-group">
+                            <label for="BolgeKodu">Kod</label>
+                            <input id="BolgeKodu" name="BolgeKodu" class="form-control" placeholder="Bolge kodu...">
+                        </div>
+                        <div class="form-group">
+                            <label for="Aciklama">Açıklama</label>
+                            <input id="Aciklama" name="Aciklama" class="form-control" placeholder="Açıklama...">
+                        </div>
+                        <div>
+                            <a class="btn btn-block btn-danger" id="btnBolgeEkleKaydet" onclick='BolgeEkleKaydet()'>Kaydet</a>
+                        </div>
+                    </fieldset>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function YeniBolgeEkle() {
+        $("#ModalTitle").html("BÖLGE EKLE");
+        $("#bolgeEkleModal").modal();
+        $("#Id").val("");
+        $("#BolgeAdi").val("");
+        $("#BolgeKodu").val("");
+        $("#Aciklama").val("");
+
+    }
+
+    function BolgeDuzenle(id) {
+        $("#ModalTitle").html("BÖLGE DÜZENLE");
+        $("#bolgeEkleModal").modal();
+
+
+        $("#Id").val(id);
+        $("#BolgeAdi").val($("#BolgeAdi_" + id).text());
+        $("#BolgeKodu").val($("#BolgeKodu_"+id).text());
+        $("#Aciklama").val($("#Aciklama_"+id).text());
+
+    }
+
+    function BolgeEkleKaydet() {
+
+        var data = $('#bolgeDuzenleForm').serialize();
+        console.log(data);
+
+        $('#bolgeEkleModal').modal('toggle');
+
+        $.ajax({
+            type: "Post",
+            url: "/Ogrenci/OgrenciBolgeEkleDuzenle",
+            data: data,
+            success: function (result) {
+                if (result == "True") {
+                    window.location.href = "/Ogrenci/OgrenciBolgeListe";
+                } else {
+                    alert(result);
+                }
+
+            }
+        });
+    }
+
+
+</script>

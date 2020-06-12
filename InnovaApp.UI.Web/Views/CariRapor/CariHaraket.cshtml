@@ -1,0 +1,318 @@
+﻿
+<link href="/modules/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet" />
+<section class="content">
+    <div class="card">
+        <header class="card-header bg-info">
+            <a href="#" data-toggle="collapse" data-target="#headerExtraValues-area" aria-expanded="false" style="color:black" class="">
+                @*collapsed*@
+                        <i class="icon-action fa fa-chevron-down"></i>
+                        <span class="title">CARi DETAYLARI</span>
+                    </a>
+        </header>
+        <div class="collapse show" id="headerExtraValues-area">
+            <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>Müşteri</dt>
+                                <dd id="h3CariAdi"></dd>
+                                <dt>Bakiye</dt>
+                                <dd id="h3Bakiye"></dd>
+                                <dt>Risk</dt>
+                                <dd id="h3risk"></dd>
+                                <dt>Vergi No/Tc</dt>
+                                <dd id="h3vergiNumarasi"></dd>
+                                <dt>Vergi Dairesi</dt>
+                                <dd id="h3vergiDairesi"></dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>İl</dt>
+                                <dd id="h3cariIl"></dd>
+                                <dt>İlçe</dt>
+                                <dd id="h3cariIlce"></dd>
+                                <dt>Adres</dt>
+                                <dd id="h3cariAdres"></dd>
+                                <dt>Tel. No</dt>
+                                <dd id="h3telNo"></dd>
+                                <dt>E-Posta</dt>
+                                <dd id="h3ePosta"></dd>
+                            </dl>
+                        </div>
+                    </div> 
+                </form>
+            </article>
+        </div>
+
+
+    </div>
+    <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" style="width: 48px">
+                <span class="fa fa-spinner fa-spin fa-3x"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        @*<h3 class="text-muted card-title" id="h3CariKodu"></h3>*@
+                        <h3 id="h3CariAdi" class="font-weight-bold card-title">HARAKETLER</h3>
+                    </div>
+                    <div class="row">
+                        <h3 id="h3Bakiye" class="card-title"></h3>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+
+                    <div class="table-responsive text-nowrap">
+
+                        <table id="tableCariHaraketListe" class="table table-bordered table-striped table-condensed cf">
+                            <thead>
+                                <tr>
+                                    <th style="min-width:15px; ">Sıra</th>
+                                    <th style="min-width:30px; ">Haraket</th>
+                                    <th style="min-width:100px;">Tarih</th>
+                                    <th style="min-width:75px; ">Açıklama</th>
+                                    <th style="min-width:75px;" >Vade Tarihi</th>
+                                    <th>Borç</th>
+                                    <th>Alacak</th>
+                                    <th>Bakiye</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyCariHaraketListe">
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th style="min-width:15px;">Sıra</th>
+                                    <th style="min-width:30px;">Haraket</th>
+                                    <th style="min-width:100px;">Tarih</th>
+                                    <th style="min-width:75px;">Açıklama</th>
+                                    <th style="min-width:75px;">Vade Tarihi</th>
+                                    <th>Borç</th>
+                                    <th>Alacak</th>
+                                    <th>Bakiye</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+    
+
+<div class="modal fade" id="modalFaturaIzle">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header alert-info">
+                <h4>FATURA İÇERİK</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <table id="tableFaturaStoklar" class="table table-bordered table-striped table-condensed cf">
+
+                    <thead>
+                        <tr>
+                            <th>Stok Adı</th>
+                            <th>Birim</th>
+                            <th>Miktar</th>
+                            <th>Fiyat</th>
+                            <th>Top. Tutar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBodyFaturaStoklar">
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-warning">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal hide" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-header">
+        <h1>Processing...</h1>
+    </div>
+    <div class="modal-body">
+        <div class="progress progress-striped active">
+            <div class="bar" style="width: 100%;"></div>
+        </div>
+    </div>
+</div>
+
+    <script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            //console.log("Cari haraket liste çalışıyor.");
+            //$('#tableCariHaraketListe').DataTable();
+            
+            var cariKod = decodeURIComponent(getUrlVars()["cariKodu"]);
+            console.log(cariKod);
+            waitingDialog.show('Yükleniyor...');
+            cariHaraketListele(cariKod);
+            setTimeout(function () { waitingDialog.hide(); }, 4000);
+        });
+
+        var myApp;
+        myApp = myApp || (function () {
+        var pleaseWaitDiv = $('<div class="modal hide" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false"><div class="modal-header"><h1>Processing...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div></div></div>');
+        return {
+            showPleaseWait: function() {
+                pleaseWaitDiv.modal();
+            },
+            hidePleaseWait: function () {
+                pleaseWaitDiv.modal('hide');
+            },
+            };
+        })();
+        
+        function cariHaraketListele(cariKod) {
+            $.get("/CariRapor/CariHaraketListe?cariKodu=" + cariKod, DataBind);
+            $('#tableCariHaraketListe').dataTable().fnDestroy();
+            $("#tableBodyCariHaraketListe").empty();
+
+            function getFormattedDate(date) {
+                //2019-01-01
+                let year = date.substring(0,4);
+                let month = date.substring(5,7);
+                let day = date.substring(8, 10);
+                //console.log("Date : "+date)
+                //console.log("Gün : "+day)
+                //console.log("Ay : "+month)
+                //console.log(day + '.' + month + '.' + year)
+                return day + '.' + month + '.' + year;
+                
+            }
+
+            function DataBind(liste) {
+                $("#h3CariAdi").text(liste.cariBilgi[0].cariAdi);
+                //$("#h3CariKodu").text(liste.cariBilgi[0].cariKodu+" - ");
+                $("#h3Bakiye"       ).text(liste.cariBilgi[0].bakiye.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+ " tl");
+                $("#h3vergiDairesi" ).text(liste.cariBilgi[0].vergiDairesi);
+                $("#h3vergiNumarasi").text(liste.cariBilgi[0].vergiNumarasi);
+                $("#h3cariIl"       ).text(liste.cariBilgi[0].cariIl);
+                $("#h3cariIlce"     ).text(liste.cariBilgi[0].cariIlce);
+                $("#h3cariAdres"    ).text(liste.cariBilgi[0].cariAdres);
+                $("#h3telNo"        ).text(liste.cariBilgi[0].cariTel);
+                $("#h3ePosta"       ).text(liste.cariBilgi[0].email);
+                $("#h3risk"         ).text(liste.cariBilgi[0].risk.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+
+                            
+                var SetData = $('#tableBodyCariHaraketListe');
+                
+                for (var i = 0; i < liste.cariHaraket.length; i++) {
+                    var Data = "";
+                    if (liste.cariHaraket[i].haraketTuru == 'FATURA') {
+                        Data = "<tr class='row_" + i + "'>" +
+                            "<td>" + (i + 1) + "</td>" +
+                            "<td>" + "<a href='#' OnClick ='FaturaBak(\"" + liste.cariHaraket[i].belgeNo + "\",\"" + liste.cariHaraket[i].cariKodu + "\")' ><i class='far fa-eye'></i> "+liste.cariHaraket[i].haraketTuru+"</a></td>" +
+                            "<td>" + getFormattedDate((liste.cariHaraket[i].tarih).substring(0, (liste.cariHaraket[i].tarih).length - 9)) + "</td>" +
+                            "<td>" + liste.cariHaraket[i].aciklama + "</td>" +
+                            "<td>" +  getFormattedDate(liste.cariHaraket[i].vadeTarih.substring(0, (liste.cariHaraket[i].tarih).length - 9)) + "</td>" +
+                            "<td>" + liste.cariHaraket[i].borc.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                            "<td>" + liste.cariHaraket[i].alacak.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                            "<td>" + liste.cariHaraket[i].bakiye.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td></tr>";
+                        
+                    } else {
+                        Data = "<tr class='row_" + i + "'>" +
+                        "<td>" + (i+1) + "</td>" +
+                       "<td>" + "<a><i class='far fa-eye'></i> "+liste.cariHaraket[i].haraketTuru+"</a></td>" +
+                        "<td>" + getFormattedDate((liste.cariHaraket[i].tarih).substring(0, (liste.cariHaraket[i].tarih).length - 9))+ "</td>" +
+                        "<td>" + liste.cariHaraket[i].aciklama + "</td>" +
+                        "<td>" +  getFormattedDate(liste.cariHaraket[i].vadeTarih.substring(0, (liste.cariHaraket[i].tarih).length - 9)) + "</td>" +
+                        "<td>" + liste.cariHaraket[i].borc.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                        "<td>" + liste.cariHaraket[i].alacak.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                        "<td>" + liste.cariHaraket[i].bakiye.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>"+
+                        "</tr>";
+                    }
+                    
+
+                    SetData.append(Data);
+                    $("#LoadingStatus").html("  ");
+                    
+                }
+                
+                $('#tableCariHaraketListe').DataTable( {
+                    "language": {
+                        "lengthMenu": "Her sayfada _MENU_ kayıt",
+                        "zeroRecords": "Kayıt bulunamadı",
+                        "info": "Sayfa : _PAGE_ / _PAGES_",
+                        "sSearch":         "Bul : ",
+                        "filter":"Ara",
+                        "infoEmpty": "Kayıt yok",
+                        "infoFiltered": "(Filtrelenen toplam kayıt _MAX_)",
+                        "oPaginate": {
+                            "sFirst":      "İlk Kayıt",
+                            "sPrevious":   "Önceki",
+                            "sNext":       "Sonraki",
+                            "sLast":       "Son Kayıt"
+                        }
+                    }
+                });
+                $('.dataTables_length').addClass('bs-select');
+                
+            }
+            
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function FaturaBak(belgeNo, cariKodu) {
+        
+            $("#tableBodyFaturaStoklar").empty();
+            faturaVerileriniDoldur(belgeNo,cariKodu);
+            
+        }
+
+
+        function faturaVerileriniDoldur(belgeNo,cariKodu) {;
+            $.get("/CariRapor/FaturaBak?belgeNo=" + belgeNo + "&cariKodu=" + cariKodu, null, DataBind);
+        
+            function DataBind(data) {
+            
+            var SetData = $('#tableBodyFaturaStoklar');
+            for (var i = 0; i < data.length; i++) {
+                
+                var satir = "<tr>" +
+                    "<td>" + data[i].stokAdi + "</td>" +
+                    "<td>" + data[i].birim + "</td>" +
+                    "<td>" + data[i].miktar.toFixed(2) + "</td>" +
+                    "<td>" + (data[i].toplamTutar/data[i].miktar).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                    "<td>" + data[i].toplamTutar.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                    "</tr>";
+                    SetData.append(satir);
+                }
+
+                
+
+                
+
+            }
+            $('#modalFaturaIzle').modal('toggle');
+
+    }
+
+    </script>

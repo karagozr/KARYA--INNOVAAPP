@@ -1,0 +1,167 @@
+﻿@using InnovaApp.UI.Web.Models.OgrenciServis
+@model OkulModel
+
+<section class="content">
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">OKUL LİSTE</span>
+            </a>
+            <a id="btnYeniOkul" name="btnYeniOkul" class="btn btn-primary float-right" onclick="YeniOkulEkle()" style="width:100px;"><i class="fas fa-plus"></i> Ekle </a>
+        </header>
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableTalepSiparisStoklar" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>OKUL ADI</th>
+                                <th>OKUL KODU</th>
+                                <th>ACIKLAMA</th>
+                                <th>DURUM</th>
+                                <th style="width:100px;">DÜZENLE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyTalepSiparisStoklar">
+                            @foreach (var item in Model.OkulListe)
+                            {
+                                <tr id="row_@item.Id">
+                                    <td id='OkulAdi_@item.Id' style="padding-left:5px;">@item.OkulAdi</td>
+                                    <td id='OkulKodu_@item.Id' style="padding-left:5px;">@item.OkulKodu</td>
+                                    <td id='Aciklama_@item.Id' style="padding-left:5px;">@item.Aciklama</td>
+                                    <td padding-left:5px;">
+                                    <input type="hidden" id="Durum_@item.Id" value=@(item.Durum ? "true" : "false")>
+                                    @if (item.Durum)
+                                    {<a>Aktif</a> }
+                                    else
+                                    { <a>Pasif</a>}</td>
+                                    <td>
+                                        <a class='btn btn-warning' onclick='OkulDuzenle(@item.Id)'><i class='far fa-edit'></i></a>
+                                        <a class='btn btn-danger' onclick='talepStokSilModal()'><i class='far fa-trash-alt'></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            </article> <!-- card-body.// -->
+        </div> <!-- collapse .// -->
+    </div> <!-- card.// -->
+</section>
+<div class="modal fade" id="okulEkleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="ModalTitle"></h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <form id="okulDuzenleForm">
+                    <fieldset id="okulEkleForm">
+                        <input type="hidden" id="Id" name="Id" class="form-control">
+                        <div class="form-group">
+                            <label for="OkulAdi">Okul Adı</label>
+                            <input id="OkulAdi" name="OkulAdi" class="form-control" placeholder="Okul adi...">
+                        </div>
+                        <div class="form-group">
+                            <label for="OkulKodu">Kod</label>
+                            <input id="OkulKodu" name="OkulKodu" class="form-control" placeholder="Okul kodu...">
+                        </div>
+                        <div class="form-group">
+                            <label for="Aciklama">Açıklama</label>
+                            <input id="Aciklama" name="Aciklama" class="form-control" placeholder="Açıklama...">
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" name="Durum" value="true" class="custom-control-input" id="Durum" checked="">
+                                <label class="custom-control-label" for="Durum">Durum</label>
+                            </div>
+                        </div>
+                        <div>
+                            <a class="btn btn-block btn-danger" id="btnOkulEkleKaydet" onclick='OkulEkleKaydet()'>Kaydet</a>
+                        </div>
+                    </fieldset>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function YeniOkulEkle() {
+        $("#ModalTitle").html("OKUL EKLE");
+        $("#okulEkleModal").modal();
+        $("#Durum").prop('checked', true);
+        $("#Id").val("");
+        $("#OkulAdi").val("");
+        $("#OkulKod").val("");
+        $("#Aciklama").val("");
+        
+    }
+
+    function OkulDuzenle(id) {
+        $("#ModalTitle").html("OKUL DÜZENLE");
+        $("#okulEkleModal").modal();
+        //var _durum;
+        
+        //if ($("#Durum_" + id).val() == "Pasif") {
+        //    console.log("1 --- "+$("#Durum_" + id).text());
+        //    _durum = false;
+        //} else {
+        //    console.log("2 --- "+$("#Durum_" + id).text());
+        //    _durum = true;
+        //}
+
+        console.log($("#Durum_" + id).val());
+        if ($("#Durum_" + id).val() == "true") {
+            $("#Durum").prop('checked', true);
+            $("#Durum").val(1);
+        } else {
+            $("#Durum").prop('checked', false);
+            $("#Durum").val(0);
+        }
+        
+        $("#Id").val(id);
+        $("#OkulAdi").val($("#OkulAdi_" + id).text());
+        $("#OkulKodu").val($("#OkulKodu_"+id).text());
+        $("#Aciklama").val($("#Aciklama_"+id).text());
+        
+    }
+
+    function OkulEkleKaydet() {
+
+        if ($("#Durum").prop("checked") == true) {
+            $("#Durum").val(true);
+        } else {
+            $("#Durum").val(false);
+        }
+        var data = $('#okulDuzenleForm').serialize();
+        console.log(data);
+       
+        $('#okulEkleModal').modal('toggle');
+        
+        $.ajax({
+            type: "Post",
+            url: "/Okul/OkulEkleDuzenle",
+            data: data,
+            success: function (result) {
+                if (result == "True") {
+                    window.location.href = "/Okul/OkulListe";
+                } else {
+                    alert(result);
+                }
+                
+            }
+        });
+    }
+    
+    
+</script>

@@ -1,0 +1,335 @@
+﻿<section class="content">
+    <div class="card">
+        <header class="card-header bg-info">
+            <a href="#" data-toggle="collapse" data-target="#headerValues-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">FİLTRE</span>
+            </a>
+        </header>
+        <div class="collapse show" id="headerValues-area">
+            <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                <form id="cariRaporListeFilteForm" method="get">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input id="sube" class="form-control" value="0" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input id="belgeNo" class="form-control" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input id="tarih" class="form-control" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input id="belgeDurum" class="form-control" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input id="aciklama" class="form-control" placeholder="açıklama...">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </article>
+        </div>
+
+        <div class="card-footer">
+            <button id="btnYeniTalepStok" name="btnYeniTalepStok" type="submit" class="btn btn-warning" onclick="yeniTalepStokEkle()" style="width:100px;"><i class="fas fa-plus"></i> Ekle </button>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">CARİ LİSTE</span>
+            </a>
+        </header>
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableTalepSiparisStoklar" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>Birim</th>
+                                <th>Miktar</th>
+                                <th style="width:120px;">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyTalepSiparisStoklar">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            </article> <!-- card-body.// -->
+        </div> <!-- collapse .// -->
+    </div> <!-- card.// -->
+</section>
+
+<div class="modal fade" id="talepStokEkle">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="ModalTitle"></h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <form id="form">
+                    <fieldset id="stokBilgiForm">
+                        <input type="hidden" id="belgeId" class="form-control" >
+                        <div class="form-group">
+                            <label for="stokSec">Stok Seç</label>
+                            <select id="stokSec" class="form-control">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="stokMiktar">Miktar</label>
+                            <input id="stokMiktar" class="form-control" placeholder="miktar...">
+                        </div>
+                        <div>
+                            <a class="btn btn-block btn-danger" id="btnStokEkleDuzenleKaydet">Kaydet</a>
+                        </div>
+                    </fieldset>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="talepStokIptal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <input type="hidden" id="silinecekBelgeId" class="form-control">
+            <div class="modal-header">
+                <h4>Kayıt Sil</h4>
+                <a class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <div>
+                    <h4 id="silinecekStokAdi"></h4>
+                </div>
+                <div>
+                    <h4 id="silinecekStokKodu"></h4>
+                </div>
+                <div>
+                    <h4 id="silinecekMiktar"></h4>
+                </div>
+
+                <div>
+                    <h4 style="color:maroon">Kayıt silinecek. Emin misiniz?</h4>
+                </div>
+
+                <div class="modal-footer">
+                    <a class="btn btn-primary" data-dismiss="modal">Hayır</a>
+                    <a class="btn btn-danger" onclick="SilmeyiOnayla()">Evet</a>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        console.log("Talep Detay çalışıyor.");
+        stokListesiGetir();
+        
+        //cariBakiyeliListele();
+        var belgeNO = decodeURIComponent(getUrlVars()["belgeNo"]);
+        talepBaslikVerileriniDoldur(belgeNO);
+    });
+
+    function talepBaslikVerileriniDoldur(belgeNO) {
+        
+        $.get("/TalepSiparis/TalepDetayVerileri?belgeNo=" + belgeNO, null, DataBind);
+        function DataBind(baslikData) {
+            console.log(baslikData);
+
+            if (baslikData == "") { window.location.href = "/TalepSiparis/TalepListe"; }
+            
+            console.log(baslikData.talepSiparisBaslik.belgeNo);
+            $("#belgeNo").val(baslikData.talepSiparisBaslik.belgeNo);
+            $("#sube").val(baslikData.talepSiparisBaslik.sube);
+            $("#tarih").val(moment(baslikData.talepSiparisBaslik.tarih).format('DD-MM-YYYY HH:mm'));
+            $("#aciklama").val(baslikData.talepSiparisBaslik.aciklama);
+            $("#belgeDurum").val(baslikData.talepSiparisBaslik.belgeDurum);
+            $('#tableBodyTalepSiparisStoklar').empty();
+            console.log(baslikData.talepSiparisDetay);
+            var detay = baslikData.talepSiparisDetay;
+            var SetData = $('#tableBodyTalepSiparisStoklar');
+            for (var i = 0; i < detay.length; i++) {
+
+                var Data = "<tr class='row_" + detay[i].id + " value="+detay[i].id+"'>" +
+                    "<td>" + (i+1) + "</td>" +
+                    "<td id='stokKod_" + detay[i].id + "'>" + detay[i].stokKodu + "</td>" +
+                    "<td id='stokAdi_" + detay[i].id + "'>" + detay[i].stokAdi + "</td>" +
+                    "<td id ='birim_" + detay[i].id + "'>" + detay[i].birim + "</td>" +
+                    "<td id='miktar_" + detay[i].id + "'>" + detay[i].miktar + "</td>" +
+                    "<td>" + "<a class='btn btn-warning' onclick='talepDuzenleModal(" + detay[i].id + ")'><i class='far fa-edit'></i></a>" +
+                    " " + "<a class='btn btn-danger' onclick='talepStokSilModal(" + detay[i].id + ")'><i class='far fa-trash-alt'></i></a>" + "</td>" +
+
+                    "</tr>";
+                SetData.append(Data);
+                $("#LoadingStatus").html("  ");
+            };
+        }
+
+    }
+
+    function stokListesiGetir() {
+        $.get("/TalepSiparis/StokListesi", null, DataBind);
+        function DataBind(stokData) {
+
+            var str1 = "";
+            console.log(stokData);
+            for (var i = 0; i < stokData.length; i++){
+                str1 += "<option value='" + stokData[i].stokKodu + "' data-birim='" + stokData[i].birim + "'>" + stokData[i].stokAdi + "</option>";
+            }
+            $("#stokSec").append(str1);
+        }
+        
+    }
+
+    function getUrlVars() {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    function yeniTalepStokEkle()
+    {
+        $("#ModalTitle").html("Stok Gir");
+        $("#talepStokEkle").modal();
+        $("#stokMiktar").val(null);
+        $("#stokSec").val(null);
+        $("#belgeId").val(0);
+    }
+
+    function talepDuzenleModal(id) {
+
+        //console.log("ID : " + id)
+        //var url = "RequestOrder/GetTalepByGuid?id=" + id
+
+        $("#ModalTitle").html("Stok Seçim Güncelle");
+        $("#talepStokEkle").modal();
+        $("#belgeId").val(id);
+        $("#stokMiktar").val($("#miktar_"+id).text());
+        $("#stokSec").val($("#stokKod_" + id).text());
+
+        //$.ajax({
+        //    type: "GET",
+        //    url: url,
+        //    success: function (data) {
+        //        //console.log(data)
+        //        var obj = JSON.parse(data);
+        //        $("#txbGuid").val(obj.Guid);
+        //        $("#txbStokKodu").val(obj.StokKodu);
+        //        $("#txbMiktar").val(obj.Miktar);
+        //        $("#drpStokAdi :selected").val(obj.StokKodu);
+        //        //console.log(obj.Miktar)
+        //    }
+        //})
+
+    }
+
+    $('#btnStokEkleDuzenleKaydet').click(function ()
+    {   
+        var _id  = $("#belgeId").val();
+        var _stokAdi  = $("#stokSec option:selected").text();
+        var _birim = $("#stokSec option:selected").data("birim");
+        var _stokKodu = $("#stokSec option:selected").val();
+        var _miktar = $("#stokMiktar").val();
+        var _belgeNo = $("#belgeNo").val();
+        var _tarih = $("#tarih").val();
+        var _aciklama = $("#aciklama").val();
+        var _belgeDurum = $("#belgeDurum").val();
+        
+        //BelgeKayit.Id=1&BelgeKayit.Miktar=5&BelgeKayit.StokKodu=ST08&BelgeKayit.StokAdi=KUM&BelgeKayit.Birim=KG&BelgeNo=TA00001&Tarih=10-09-2019 13:26:38&Aciklama=&SubeId=1&TalepDurum=ONAYLANDI
+        //BelgeKayit.BelgeNo=TA00001&BelgeKayit.Tarih=2019-09-10T13:26:38.22&BelgeKayit.Aciklama=&BelgeKayit.StokAdi=EL ARABASI&BelgeKayit.StokKodu=ST09&BelgeKayit.Birim=AD$BelgeKayit.Miktar=5
+        var data = "Id="+_id+"&BelgeNo=" + _belgeNo + "&Tarih=" + _tarih + "&Aciklama=" + _aciklama + "&BelgeDurum="+_belgeDurum;
+        data = data + "&StokAdi=" + _stokAdi + "&StokKodu=" + _stokKodu + "&Birim=" + _birim + "&Miktar=" + _miktar+"";
+        $('#talepStokEkle').modal('toggle');
+        console.log(data);
+        $.ajax({
+            type: "Post",
+            url: "/TalepSiparis/TalepEkleDuzenle",
+            data: data,
+            success: function (result) {
+                console.log(result)
+                if (result == "hata")
+                {
+                   alert("İşlem Sırasında hata oluştu");
+                }
+                else
+                {
+                    //alert(result);
+                    talepBaslikVerileriniDoldur(result);
+                }
+            }
+        });
+    });
+
+    function talepStokSilModal(id) {
+
+        $("#silinecekBelgeId").val(id);
+        $("#silinecekStokKodu").text($("#stokKod_"+id).text());
+        $("#silinecekStokAdi").text($("#stokAdi_" + id).text());
+        $("#silinecekMiktar").text("Miktar : "+$("#miktar_" + id).text());
+
+        $("#ModalTitle").html("Talep Stok İptal");
+        $("#talepStokIptal").modal();
+
+        
+    }
+
+    function SilmeyiOnayla() {
+
+        //console.log($("#silinecekBelgeId").val());
+        $('#talepStokIptal').modal('toggle');
+
+        $.ajax({
+            type: "POST",
+            url: "/TalepSiparis/BelgeSil?belgeId=" +  $("#silinecekBelgeId").val(),
+            success: function (result) {
+                console.log(result)
+                if (result == "hata")
+                {
+                   alert("İşlem Sırasında hata oluştu");
+                }
+                else
+                {
+                    talepBaslikVerileriniDoldur($("#belgeNo").val());
+                }
+            }
+        })
+    }
+
+    
+
+</script> 

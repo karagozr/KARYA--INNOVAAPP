@@ -1,0 +1,237 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model List<InnovaApp.UI.Web.Models.SiparisBaslikModel>
+@{int i = 0;}
+
+<link href="/modules/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet" />
+<link href="/modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+
+<section class="content">
+    <div class="card">
+        <header class="card-header bg-info">
+            <a href="#" data-toggle="collapse" data-target="#filter-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">FİLTRE</span>
+            </a>
+        </header>
+        <div class="collapse show" id="filter-area">
+            <article class="card-body" style="padding-bottom:5px;padding-top:5px">
+                <form id="filtreSiparisTalepListeForm">
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="onayDurum">Talep Durumu</label>
+                                <select id="onayDurum" name="onayDurum" class="form-control">
+                                    <option value="">Hepsi</option>
+                                    <option value="A">Beklemede</option>
+                                    <option value="B">Onayladı</option>
+                                    <option value="C">İptal</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="SiparisTarih2">Tarih Aralığı-1</label>
+                                <input type="date" class="form-control datepicker" value="@ViewBag.tarih1" name="tarih1" id="tarihSec1">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="SiparisTarih2">Tarih Aralığı-2</label>
+                                <input type="date" class="form-control datepicker" value="@ViewBag.tarih2" name="tarih2" id="tarihSec2">
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </article>
+        </div>
+
+        <div class="card-footer">
+            <button id="btnListele" type="submit" class="btn btn-primary " form="filtreSiparisTalepListeForm" onclick="Listele()" style="width:100px;"><i class="fas fa-search"></i> Listele </button>
+            <button id="btnFiltreTemizle" type="submit" class="btn btn-secondary " onclick="FltreTemizle()" style="width:100px;"><i class="fas fa-eraser"></i> Temizle</button>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <strong>ADMİN TEKLİF / SİPARİŞ LİSTESİ</strong>
+            </a>
+        </header>
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableSiparisListe" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr style="background-color:darkcyan">
+                                <th>SIRA</th>
+                                <th>BELGE NO</th>
+                                <th>TARİH</th>
+                                <th>BAYİ</th>
+                                <th>BAYİ-MÜŞTERİSİ</th>
+                                <th>AÇIKLAMA</th>
+                                <th>DURUM AÇIKLAMA</th>
+                                <th style="width:110px;">Aç/Düzenle</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodySiparisListe">
+
+                            @foreach (var item in Model)
+                            {
+
+                            <tr id="row_@item.BelgeNo">
+                                @{i = i + 1;}
+                                <td>@i</td>
+                                <td>
+                                    <a href="#" onClick="SiparisStok('@item.BelgeNo')"><i class='fas fa-search'></i> @item.BelgeNo</a>
+                                </td>
+                                <td>@item.Tarih</td>
+                                <td>@item.Aciklama</td>
+                                <td>@item.CariAdi</td>
+                                <td>@item.Musteri</td>
+                                <td>@item.OnayDurumAciklama</td>
+                                <td style="width:90px;">
+                                    @if (item.OnayDurum == "A")
+                                    {
+                                        <a class='btn btn-warning' href="/MotoServis/Onay?belgeNo=@item.BelgeNo">Detay (Beklemede)<i class='far fa-edit'></i></a>
+                                    }
+                                    else if (item.OnayDurum == "B")
+                                    {
+                                        <a class='btn btn-info' href="/MotoServis/Onay?belgeNo=@item.BelgeNo">Detay (Onaylandı)<i class='far fa-edit'></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a class='btn btn-danger' href="/MotoServis/Onay?belgeNo=@item.BelgeNo">Detay (İptal)<i class='far fa-edit'></i></a>
+                                    }
+
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>SIRA</th>
+                                <th>BELGE NO</th>
+                                <th>TARİH</th>
+                                <th>MÜŞTERİ</th>
+                                <th>AÇIKLAMA</th>
+                                <th>DURUM AÇIKLAMA</th>
+                                <th style="width:110px;"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+
+
+
+            </article> <!-- card-body.// -->
+        </div> <!-- collapse .// -->
+    </div> <!-- card.// -->
+    <!-- /.card -->
+    <!-- /.card -->
+
+</section>
+
+<div class="modal fade" id="modalSiparisStokListe">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header alert-info">
+                <h4>SİPARİŞ ÖNİZLE</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <table id="tableTalepSiparisStoklar" class="table table-bordered table-striped table-condensed cf">
+
+                    <thead>
+                        <tr>
+                            <th>Sıra</th>
+                            <th>Stok Adı</th>
+                            <th>Miktar</th>
+                            <th>Top. Tutar</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBodyTalepSiparisStoklar">
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-warning">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
+
+<script>
+
+
+    $(document).ready(function () {
+        console.log("Siapris Talep liste çalışıyor.");
+        $("#onayDurum").val('@ViewBag.onayDurum');
+
+        $('#tableSiparisListe').DataTable({
+                "language": {
+                    "lengthMenu": "Her sayfada _MENU_ kayıt",
+                    "zeroRecords": "Kayıt bulunamadı - !!!",
+                    "info": "Sayfa : _PAGE_ / _PAGES_",
+                    "sSearch": "Bul : ",
+                    "filter": "Ara",
+                    "infoEmpty": "Kayıt yok",
+                    "infoFiltered": "(Filtrelenen toplam kayıt _MAX_)",
+                    "oPaginate": {
+                        "sFirst": "İlk Kayıt",
+                        "sPrevious": "Önceki",
+                        "sNext": "Sonraki",
+                        "sLast": "Son Kayıt"
+                    }
+                }
+            });
+        $('.dataTables_length').addClass('bs-select');
+
+    });
+
+    function SiparisStok(belgeNo) {
+        $("#tableBodyTalepSiparisStoklar").empty();
+        talepBaslikVerileriniDoldur(belgeNo);
+        $('#modalSiparisStokListe').modal('toggle');
+    }
+
+
+    function talepBaslikVerileriniDoldur(belgeNO) {;
+        $.get("/FideSiparis/TeklifBilgileri?belgeNo=" + belgeNO, null, DataBind);
+
+        function DataBind(baslikData) {
+            console.log(baslikData);
+            var data = baslikData.siparisDetay;
+
+            var SetData = $('#tableBodyTalepSiparisStoklar');
+            for (var i = 0; i < data.length; i++) {
+
+                var satir = "<tr id='row_" + data[i].Id + "' value='" + data[i].Id + "'>" +
+                    "<td>" + (i + 1) + "</td>" +
+                    "<td id ='stokAdi_" + 1 + "'>"  + data[i].stokAdi + "</td>" +
+                    "<td id ='birim_" + 1 + "'>"    + data[i].miktar.toFixed(2) + "</td>" +
+                    "<td id ='birim_"   + 1 + "'>"  + data[i].toplamTutar.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                    "<td id ='birim_" + 1 + "'>"    + data[i].aciklama + "</td></tr>";
+
+                    SetData.append(satir);
+            }
+
+        }
+
+    }
+
+
+</script>

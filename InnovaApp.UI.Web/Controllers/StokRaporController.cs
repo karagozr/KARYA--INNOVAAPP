@@ -43,7 +43,26 @@ namespace InnovaApp.UI.Web.Controllers
             return Json(result);
         }
 
+        public JsonResult StokBulStokKoduIle(string stokKod)
+        {
+            if (HttpContext.Session.GetString("UserId") == null) return Json("");
 
+            if (string.IsNullOrEmpty(stokKod)) return Json("");
+
+            var stokListe = _stokRepository.StokBul(x => x.StokKodu.Contains(stokKod));
+            return Json(stokListe);
+        }
+
+        public JsonResult StokBulStokAdiIle(string stokAd)
+        {
+            if (HttpContext.Session.GetString("UserId") == null) return Json("");
+
+            if (string.IsNullOrEmpty(stokAd)) return Json("");
+
+            var stokListe = _stokRepository.StokBul(x => x.StokAdi.Contains(stokAd));
+
+            return Json(stokListe);
+        }
 
     }
 }

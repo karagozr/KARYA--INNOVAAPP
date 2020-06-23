@@ -199,25 +199,29 @@
                 <span class="title">KALEMLER</span>
             </a>
 
+            <button id="btnTeklifSil" name="btnTeklifSil" type="submit" class="btn btn-danger float-right" onclick="TeklifSil('@Model.belgeNo')" style="width:150px; margin-left:5px;"><i class="fas fa-trash"></i> Teklif Sil </button>
+
             @if (ViewBag.siparisDuzenleYetki)
             {
                 <button id="btnKaydet" name="btnKaydet" type="submit" class="btn btn-info float-right" onclick="SiparisKaydet()" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Kaydet </button>
+
             }
             else
             {
                 <button type="submit" class="btn btn-info float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Kaydet </button>
+                @*<button type="submit" class="btn btn-danger float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-trash"></i> Teklif Sil </button>*@
             }
 
 
             @if (ViewBag.siparisOnayYetki)
             {
                 <button id="btnSiparisOnayla" name="btnSiparisOnayla" class="btn btn-success float-right" onclick="SiparisOnay('B')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Siparis Onay </button>
-                <button id="btnSiparisIptal" name="btnSiparisIptal" type="submit" class="btn btn-danger float-right" onclick="SiparisIptal('C')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+                <button id="btnSiparisIptal" name="btnSiparisIptal" type="submit" class="btn btn-warning float-right" onclick="SiparisIptal('C')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
             }
             else
             {
                 <button class="btn btn-success float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Siparis Onay </button>
-                <button type="submit" class="btn btn-danger float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+                <button type="submit" class="btn btn-warning float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
             }
 
         </header>
@@ -358,6 +362,25 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalTeklifSil">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>TEKLİFİ SİL</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                Teklif silinsin mi?
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="deleteTeklif">Sil</button>
+                <button type="button" data-dismiss="modal" class="btn">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="modalRiskUyari">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -393,7 +416,7 @@
         }).on('change', function() {
             $(this).valid();
         });
-        
+
     });
     $("#siparisDetayGirisForm").validate({
         rules: {
@@ -458,7 +481,7 @@
             siparisBilgiler.SiparisBaslik.OnayDurum     = data.siparisBaslik.onayDurum;
             siparisBilgiler.SiparisBaslik.OnayDurumAdi  = data.siparisBaslik.onayDurumAdi;
 
-            
+
 
             console.log(detay);
 
@@ -488,8 +511,8 @@
             console.log("DURUM : ");
             console.log(siparisBilgiler);
             TabloyaEkle(siparisBilgiler);
-            
-            
+
+
             BaslikDoldur();
         }
 
@@ -508,7 +531,7 @@
             }
             $("#dovizSec").append(str1);
         }
-        
+
     }
 
 
@@ -537,7 +560,7 @@
          var ePosta         = $(this).find(':selected').data('eposta');
          var vergiDairesi   = $(this).find(':selected').data('vergidairesi');
          var vergiNumarasi  = $(this).find(':selected').data('verginumarasi');
-         
+
 
 
          $("#cariIl").val(il);
@@ -551,7 +574,7 @@
 
 
 
-         
+
 
 
     });
@@ -755,7 +778,7 @@
     }
 
     function BaslikDoldur() {
-        
+
         $("#belgeNo").val(siparisBilgiler.SiparisBaslik.BelgeNo);
         $("#tarih").val(moment(siparisBilgiler.SiparisBaslik.Tarih).format('DD-MM-YYYY'));
         //$("#cariSec").select2().select2('val',siparisBilgiler.SiparisBaslik.CariKodu);
@@ -766,7 +789,7 @@
         console.log($("#cariSec").val());
         $("#aciklama").val(siparisBilgiler.SiparisBaslik.Aciklama);
         $("#siparisDurum").val(siparisBilgiler.SiparisBaslik.OnayDurum);
-        
+
     }
 
     function TabloyaEkle(siparisBilgiler) {
@@ -918,7 +941,7 @@
 
         var tRisk =  $("#cariSec").find(':selected').data('toplamrisk');
         var toplamRisk =parseFloat(tRisk);
-        
+
         if (toplamRisk < toplamTut) {
 
             console.log("risk :" + toplamRisk + "toplam tutar :" + toplamTut);
@@ -934,7 +957,7 @@
         else
         {
             waitingDialog.show('Kaydediliyor...');
-       
+
             var _cariKodu = $("#cariSec").find(':selected').val();
             var _cariAdi = $("#cariSec").find(':selected').text();
             var _aciklama = $("#aciklama").val();
@@ -950,17 +973,17 @@
             }
 
             if (siparisBilgiler.SiparisBaslik.Aciklama == "") {
-                
+
                 var maxTutar = 0;
                 var stok = "";
                 console.log("-----------**--------" + siparisBilgiler.SiparisDetay.length);
-                
+
                 for (var i = 0; i < siparisBilgiler.SiparisDetay.length; i++) {
                     console.log(siparisBilgiler.SiparisDetay[i].ToplamTutar);
                     if (parseFloat(siparisBilgiler.SiparisDetay[i].ToplamTutar) > maxTutar) {
                         maxTutar = parseFloat(siparisBilgiler.SiparisDetay[i].ToplamTutar) ;
                         stok = siparisBilgiler.SiparisDetay[i].StokAdi;
-                        
+
                     }
                 }
 
@@ -992,7 +1015,7 @@
             })
         }
 
-        
+
     }
 
     function SiparisOnay(kod) {
@@ -1023,6 +1046,32 @@
             }
         })
 
+    }
+
+    function TeklifSil(belgeNo) {
+        $('#modalTeklifSil').modal('toggle')
+            .on('click', '#deleteTeklif', function (e) {
+                $.ajax({
+                    type: "POST",
+                    url: "/FideSiparis/TeklifSil?belgeNo=" + belgeNo,
+                    success: function (result) {
+                        //console.log(result)
+                        if (result.durum == -1) {
+                            console.log(result.mesaj);
+                            alert("İşlem Sırasında hata oluştu");
+                        }
+                        else if (result.durum == 0) {
+                            waitingDialog.hide();
+                            window.location.href = "/FideSiparis/Liste";
+                        } else if (result.durum == 1) {
+                            waitingDialog.hide();
+                            alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                            window.location.href = "/FideSiparis/Liste";
+                        }
+
+                    }
+                })
+            });
     }
 
     function SiparisIptal(kod) {

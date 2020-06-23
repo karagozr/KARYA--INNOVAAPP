@@ -146,7 +146,7 @@
 
 
 <div class="modal fade" id="modalSiparisStokListe">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header alert-info">
                 <h4>SİPARİŞ ÖNİZLE</h4>
@@ -161,6 +161,7 @@
                             <th>Sıra</th>
                             <th>Stok Adı</th>
                             <th>Miktar</th>
+                            <th>Fiyat</th>
                             <th>Top. Tutar</th>
                             <th>Açıklama</th>
                         </tr>
@@ -228,7 +229,8 @@
                 var satir = "<tr id='row_" + data[i].Id + "' value='" + data[i].Id + "'>" +
                     "<td>" + (i + 1) + "</td>" +
                     "<td id ='stokAdi_" + 1 + "'>" + data[i].stokAdi + "</td>" +
-                    "<td id ='birim_" + 1 + "'>"    + data[i].miktar.toFixed(2) + "</td>" +
+                    "<td id ='birim_" + 1 + "'>" + data[i].miktar.toFixed(2) + "</td>" +
+                    "<td id ='birim_" + 1 + "'>" + data[i].birimTutar.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
                     "<td id ='birim_"   + 1 + "'>"  + data[i].toplamTutar.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
                     "<td id ='birim_" + 1 + "'>" + data[i].aciklama + "</td></tr>";
                 

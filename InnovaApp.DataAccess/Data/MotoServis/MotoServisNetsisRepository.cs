@@ -15,6 +15,7 @@ namespace InnovaApp.DataAccess.Data.MotoServis
     {
         NetsisContext _context;
         UserRepository _userRepo;
+        
         public MotoServisNetsisRepository()
         {
             _context = new NetsisContext();
@@ -73,19 +74,40 @@ namespace InnovaApp.DataAccess.Data.MotoServis
         {
             if (tarih1 == Convert.ToDateTime("01-01-0001 00:00:00"))
             {
-                var val = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.OnayDurum == "A" ).OrderByDescending(x => x.Tarih).ToList();
-                var val1 = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.OnayDurum != "A").Where(x => x.Tarih >= DateTime.Now.AddDays(-7) && x.Tarih <= DateTime.Now).OrderByDescending(x => x.Tarih).ToList();
+                var val = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.OnayDurum == "A" && x.CariKodu==cariKodu ).OrderByDescending(x => x.Tarih).ToList();
+                var val1 = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.OnayDurum != "A" && x.CariKodu == cariKodu).Where(x => x.Tarih >= DateTime.Now.AddDays(-7) && x.Tarih <= DateTime.Now).OrderByDescending(x => x.Tarih).ToList();
                 var val3 = val1.Union(val).ToList();
                 return val3.ToList();
             }
             if (string.IsNullOrEmpty(onayDurum))
             {
-                var val = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.Tarih >= tarih1 && x.Tarih <= tarih2).OrderByDescending(x => x.Tarih);
+                var val = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.Tarih >= tarih1 && x.Tarih <= tarih2 && x.CariKodu == cariKodu).OrderByDescending(x => x.Tarih);
                 return val.ToList();
             }
             else
             {
-                var val = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.Tarih >= tarih1 && x.Tarih <= tarih2 && x.OnayDurum == onayDurum).OrderByDescending(x => x.Tarih);
+                var val = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.Tarih >= tarih1 && x.Tarih <= tarih2 && x.OnayDurum == onayDurum && x.CariKodu == cariKodu).OrderByDescending(x => x.Tarih);
+                return val.ToList();
+            }
+        }
+
+        public List<TeklifBaslik> TeklifListe(DateTime tarih1, DateTime tarih2, string onayDurum)
+        {
+            if (tarih1 == Convert.ToDateTime("01-01-0001 00:00:00"))
+            {
+                var val = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.OnayDurum == "A" ).OrderByDescending(x => x.Tarih).ToList();
+                var val1 = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.OnayDurum != "A" ).Where(x => x.Tarih >= DateTime.Now.AddDays(-7) && x.Tarih <= DateTime.Now).OrderByDescending(x => x.Tarih).ToList();
+                var val3 = val1.Union(val).ToList();
+                return val3.ToList();
+            }
+            if (string.IsNullOrEmpty(onayDurum))
+            {
+                var val = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.Tarih >= tarih1 && x.Tarih <= tarih2 ).OrderByDescending(x => x.Tarih);
+                return val.ToList();
+            }
+            else
+            {
+                var val = _context.TeklifBaslik.Where(x => x.BelgeNo.Contains("W") && x.Tarih >= tarih1 && x.Tarih <= tarih2 ).OrderByDescending(x => x.Tarih);
                 return val.ToList();
             }
         }

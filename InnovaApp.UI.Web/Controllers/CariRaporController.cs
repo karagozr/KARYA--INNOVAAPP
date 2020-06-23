@@ -59,6 +59,16 @@ namespace InnovaApp.UI.Web.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null) return RedirectToAction("Login", "Account");
 
+            if (DbManager.DbName==null)
+            {
+                DbManager.DbName = "BUYIL";
+                dynamic myDynamic = new System.Dynamic.ExpandoObject();
+                myDynamic.DbName = "BUYIL";
+                var json = JsonConvert.SerializeObject(myDynamic);
+            }
+
+            
+
             return View();
         }
 

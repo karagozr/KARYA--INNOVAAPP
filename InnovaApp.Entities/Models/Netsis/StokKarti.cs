@@ -5,7 +5,7 @@ using System.Text;
 
 namespace InnovaApp.Entities.Models.Netsis
 {
-    [Table("INN_VW_STOK_KART")]
+    [Table("TBLSTSABIT")]
     public class StokKarti
     {
         [Column("STOK_KODU")]
@@ -32,11 +32,22 @@ namespace InnovaApp.Entities.Models.Netsis
         [Column("OLCU_BR1")]
         public string OlcuBr { get; set; }
 
-        [Column("SATIS_FIAT")]
+        [Column("SATIS_FIAT1")]
         public decimal? SatisFiyat { get; set; }
 
-        [Column("KDV_SATIS")]
+        [Column("KDV_ORANI")]
         public decimal? KdvSatis { get; set; }
+
+        [Column("DOV_SATIS_FIAT")]
+        public decimal? DovizSatisFiyat { get; set; }
+
+        [Column("SAT_DOV_TIP")]
+        public byte SatisDovizTip { get; set; }
+        public string SatisDovizAdi { get {
+                if (SatisDovizTip == 1) return "USD";
+                else if (SatisDovizTip == 2) return "EUR";
+                else return "TL";
+            } }
 
     }
 }

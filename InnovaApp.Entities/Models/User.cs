@@ -23,5 +23,8 @@ namespace InnovaApp.Entities.Models
         [Column("PLASIYER_KODU")]
         public string PlasiyerKodu { get; set; }
 
+        [Column("YETKILI_CARI_KODU")]
+        public string UserCariKodu { get; set; }
+
     }
 }

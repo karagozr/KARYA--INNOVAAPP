@@ -13,9 +13,27 @@ with font-awesome or any other icon font library -->
     </div>
 
 }
-
 <br />
+@if (!string.IsNullOrEmpty(Context.Session.GetInt32("UserCariKodu").ToString()))
+{
+    <div class="text-center">
+        <a class="btn btn-info" style="width:200px;" href="/CariRapor/CariHaraket?cariKodu=@Context.Session.GetString("UserCariKodu").ToString()">
+            <i class="fas fa-universal-access"> Cari Raporum</i>
+        </a>
+    </div>
 
+}
+<br />
+@if (Context.Session.GetInt32("StokRapor") == 1)
+{
+    <div class="text-center">
+        <a class="btn btn-info" style="width:200px;" href="/StokRapor/Liste">
+            <i class="fas fa-box"> Stok Rapor</i>
+        </a>
+    </div>
+
+}
+<br />
 @if (Context.Session.GetInt32("WebTeklif") == 1)
 {
     <div class="text-center">
@@ -46,15 +64,29 @@ with font-awesome or any other icon font library -->
 
 }
 <br />
-@if (Context.Session.GetInt32("StokRapor") == 1)
+
+@if (Context.Session.GetInt32("MotoServis") == 1)
 {
     <div class="text-center">
-        <a class="btn btn-info" style="width:200px;" href="/StokRapor/Liste">
-            <i class="fas fa-box"> Stok Rapor</i>
+        <a class="btn btn-info" style="width:200px;" href="/MotoServis/Liste">
+            <i class="fas fa-motorcycle"> Moto Servis Sipariş</i>
         </a>
     </div>
 
 }
+<br />
+@if (Context.Session.GetInt32("MotoServisAdmin") == 1)
+{
+    <div class="text-center">
+        <a class="btn btn-info" style="width:200px;" href="/MotoServis/AdminListe">
+            <i class="fab fa-first-order-alt"> Moto Servis Admin</i>
+        </a>
+    </div>
+
+}
+<br />
+
+
 @*<link href="/modules/Select2/select2.css" rel="stylesheet" />
 
 

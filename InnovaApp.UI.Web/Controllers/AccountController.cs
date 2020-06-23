@@ -40,20 +40,25 @@ namespace InnovaApp.UI.Web.Controllers
                 HttpContext.Session.SetString("UserName", user.Kullanici);
                 HttpContext.Session.SetString("Depo",     user.Depo);
                 HttpContext.Session.SetString("PlasiyerKodu", user.PlasiyerKodu);
-
+                HttpContext.Session.SetString("UserCariKodu", user.UserCariKodu==null?"": user.UserCariKodu);
 
                 var webTeklif =  _userRepository.UserYetkiGetir(user.Id, 40200000);
                 var webSiparis = _userRepository.UserYetkiGetir(user.Id, 40300000);
                 var carirapor =  _userRepository.UserYetkiGetir(user.Id, 40100000);
                 var cariHarrapor = _userRepository.UserYetkiGetir(user.Id, 40100001);
                 var webIsAkis = _userRepository.UserYetkiGetir(user.Id, 40400000);
+                var stokRapor = _userRepository.UserYetkiGetir(user.Id, 40500000);
+                var motoservis = _userRepository.UserYetkiGetir(user.Id, 40600000);
+                var motoservisAdmin = _userRepository.UserYetkiGetir(user.Id, 40700000);
 
-                var webTeklifDurum      = (webTeklif    == null ? 0 : webTeklif.Yetki)    == 1 ? 1 : 0;
-                var webSiparisDurum     = (webSiparis   == null ? 0 : webSiparis.Yetki)   == 1 ? 1 : 0;
-                var cariraporDurum      = (carirapor    == null ? 0 : carirapor.Yetki)    == 1 ? 1 : 0;
-                var webIsAkisDurum      = (webIsAkis    == null ? 0 : webIsAkis.Yetki)    == 1 ? 1 : 0;
-                var cariHarRaporDurum   = (cariHarrapor == null ? 0 : cariHarrapor.Yetki) == 1 ? 1 : 0;
-                var stokraporDurum      = 1;
+                var webTeklifDurum      = (webTeklif    == null ? 0 : webTeklif.Yetki)      == 1 ? 1 : 0;
+                var webSiparisDurum     = (webSiparis   == null ? 0 : webSiparis.Yetki)     == 1 ? 1 : 0;
+                var cariraporDurum      = (carirapor    == null ? 0 : carirapor.Yetki)      == 1 ? 1 : 0;
+                var webIsAkisDurum      = (webIsAkis    == null ? 0 : webIsAkis.Yetki)      == 1 ? 1 : 0;
+                var cariHarRaporDurum   = (cariHarrapor == null ? 0 : cariHarrapor.Yetki)   == 1 ? 1 : 0;
+                var stokraporDurum      = (stokRapor    == null ? 0 : stokRapor.Yetki)      == 1 ? 1 : 0;
+                var motoservisDurum     = (motoservis   == null ? 0 : motoservis.Yetki)     == 1 ? 1 : 0;
+                var motoservisAdminDurum = (motoservisAdmin == null ? 0 : motoservisAdmin.Yetki) == 1 ? 1 : 0;
 
                 HttpContext.Session.SetInt32("CariRapor", cariraporDurum);
                 HttpContext.Session.SetInt32("StokRapor", stokraporDurum);
@@ -61,7 +66,9 @@ namespace InnovaApp.UI.Web.Controllers
                 HttpContext.Session.SetInt32("WebSiparis", webSiparisDurum);
                 HttpContext.Session.SetInt32("WebIsAkis", webIsAkisDurum);
                 HttpContext.Session.SetInt32("CariHaraketRapor", cariHarRaporDurum);
-
+                HttpContext.Session.SetInt32("StokRapor", stokraporDurum);
+                HttpContext.Session.SetInt32("MotoServis", motoservisDurum);
+                HttpContext.Session.SetInt32("MotoServisAdmin", motoservisAdminDurum);
                 return Redirect("~/");
             }
 
@@ -73,6 +80,7 @@ namespace InnovaApp.UI.Web.Controllers
             HttpContext.Session.Remove("UserName");
             HttpContext.Session.Remove("Depo");
             HttpContext.Session.Remove("PlasiyerKodu");
+            HttpContext.Session.Remove("UserCariKodu");
             HttpContext.Session.Clear();
             return RedirectToAction("Login", "Account");
         }

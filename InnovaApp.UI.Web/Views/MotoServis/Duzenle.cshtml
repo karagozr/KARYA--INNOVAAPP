@@ -1,0 +1,1197 @@
+﻿@model InnovaApp.UI.Web.Models.FideSiparis.TeklifGirisModel
+
+<link href="/modules/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet" />
+
+<style>
+    .error {
+        color: red;
+    }
+
+    #alan {
+        font-size: 1em !important;
+    }
+
+    
+
+    tr.active td {
+        background-color: #8fc3f7;
+    }
+
+
+    .newreqtable th:last-child {
+        border-top-right-radius: 14px;
+        border-right: none;
+    }
+</style>
+
+
+
+<section class="content" id="alan">
+
+    <div class="card">
+        <header class="card-header bg-info">
+            <a href="#" data-toggle="collapse" data-target="#headerValues-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">@Model.firmaCariAdi</span>
+            </a>
+        </header>
+        <div class="collapse show" id="headerValues-area">
+            <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                <form id="siparisBaslik" method="get">
+                    <div class="row">
+                        <input id="siparisBaslikGuid" class="form-control" type="hidden" value="">
+                        <input id="siparisDataJson" class="form-control" type="hidden" value="@Model.siparisDataJson">
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="belgeNo">Belge No</label>
+                                <input id="belgeNo" type="text" value="@Model.belgeNo" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="musteriAdi">Müşteri Adı</label>
+                                <input id="musteriAdi" type="text" value="@Model.musteriAdi" class="form-control" placeholder="müşteri...">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="siparisAciklama">Açıklama</label>
+                                <input id="siparisAciklama" value="@Model.aciklama" class="form-control" placeholder="açıklama...">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="tarih">SiparisTarih</label>
+                                <input id="tarih" type="datetime" class="form-control" value="@Model.tarih" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="aciklamaDuru">Durum Açıklama</label>
+                                <input id="aciklamaDuru" class="form-control" value="@Model.durumAciklama"  placeholder="durum açıklama..." readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="siparisDurum">Durum</label>
+                                <select id="siparisDurum" name="siparisDurum" value="@Model.onayDurumKodu" class="form-control" readonly="readonly">
+                                    <option value="A">BEKLEMEDE</option>
+                                    <option value="B">ONAYLANDI</option>
+                                    <option value="C">İPTAL EDİLDİ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </article>
+        </div>
+
+
+    </div>
+
+
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down float-left"></i>
+            </a>
+            @*Güncellenecek yetki*@
+            @if (ViewBag.siparisDuzenleYetki)
+            {
+                <button id="btnKalemEkle" name="btnKalemEkle" type="submit" class="btn btn-success float-left" onclick="KalemEkle()" style="width:150px; margin-left:25px;"><i class="fas fa-plus"></i> Ekle </button>
+            }
+
+            @if (ViewBag.siparisDuzenleYetki)
+            {
+                <button id="btnKaydet" name="btnKaydet" type="submit" class="btn btn-info float-right" onclick="SiparisKaydet()" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Kaydet </button>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-info float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Kaydet </button>
+            }
+
+
+            @*@if (ViewBag.siparisOnayYetki)
+            {
+                <button id="btnSiparisOnayla" name="btnSiparisOnayla" class="btn btn-success float-right" onclick="SiparisOnay('B')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Siparis Onay </button>
+                <button id="btnSiparisIptal" name="btnSiparisIptal" type="submit" class="btn btn-danger float-right" onclick="SiparisIptal('C')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+            }
+            else
+            {
+                <button class="btn btn-success float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Siparis Onay </button>
+                <button type="submit" class="btn btn-danger float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+            }*@
+
+        </header>
+
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableSiparisKalemler" class="table table-bordered table-striped table-condensed cf">
+
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>Miktar</th>
+                                <th>Döviz</th>
+                                <th>Fiyat</th>
+                                <th>Tutar</th>
+                                <th>Açıklama</th>
+                                <th style="width:120px;">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodySiparisKalemler">
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </article> <!-- card-body.// -->
+        </div> <!-- collapse .// -->
+    </div> <!-- card.// -->
+
+</section>
+
+<div class="modal fade" id="modalKalemEkle">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalKalemEkleBaslik">ŞİPARİŞE KALEM EKLE</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="input-group col-md-6">
+                        <input id="inputStokKoduAra" type="text" class="form-control" placeholder="Stok Kodu ..." aria-label="Stok Kodu Giriniz ..." aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="btnStokKoduAra" onclick="StokKoduIleAra()">Ara</button>
+                        </div>
+                    </div>
+                    <div class="input-group col-md-6">
+                        <input id="inputStokAdiAra" type="text" class="form-control" placeholder="Stok Adı ..." aria-label="Stok Adı Giriniz ..." aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="btnStokAdiAra" onclick="StokAdiIleAra()">Ara</button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="table-responsive text-nowrap">
+                    <table id="tableStoklar" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>Döviz</th>
+                                <th>Fiyat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyStoklar">
+                        </tbody>
+
+                    </table>
+                </div>
+                <h4 id="modalUyari" style="color:maroon"></h4>
+            </div>
+            
+            <div class="modal-footer">
+                <input id="stokAciklama" type="text" class="form-control" value="" placeholder="Açıklama ..." style="min-width:120px" >
+                <input id="stokMiktar" type="number" class="form-control" value="0" placeholder="Miktar ..." style="min-width:100px; max-width:150px;">
+                <button type="button" class="btn btn-success" id="modalBtnKalemEkle">Ekle</button>
+                <button type="button" data-dismiss="modal" class="btn">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalKalemGuncelle">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>KAYDI DÜZENLE /SİL</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <h4 id="duzenleStokAd">....</h4>
+                <label for="duzenleMiktar">Miktar</label>
+                <input id="duzenleMiktar" type="number" class="form-control" value="0" placeholder="Miktar ..." style="width:160px">
+                <label for="duzenleAciklama">Açıklama</label>
+                <input id="duzenleAciklama" type="text" class="form-control" value="0" placeholder="Açıklama ..." style="width:160px">
+                <h4 id="modalUyariDuzenle" style="color:maroon"></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="stokSil">Sil</button>
+                <button type="button" class="btn btn-info" id="stokEkle">Kaydet</button>
+                <button type="button" data-dismiss="modal" class="btn">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalKayitSil">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>SATIR SİL</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                Kayıt silinsin mi?
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="delete">Delete</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalRiskUyari">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>RİSK UYARI</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                Cari riski var!!!!
+                Sipariş kaydedilemez.
+                Risk kontrolü yapınız.
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="gitListe">Teklife Dön</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/modules/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="/modules/jquery-validation/dist/localization/messages_tr.min.js"></script>
+<script src="/modules/jquery-validation/dist/additional-methods.min.js"></script>
+<script src="/modules/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
+<script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
+
+<script>
+
+    let index = -1;
+    let stokMiktar = 0;
+    let siparisKalemler = [];
+    let siparisData = {
+        belgeNo:"",
+        musteriAdi: "",
+        aciklama: "",
+        tarih: null,
+        detay: siparisKalemler
+    }
+
+    
+    $(document).ready(function () {
+        //SiparisBilgileriniYukle();
+        var siparisKalemlerJson = $('#siparisBaslik').find('input[id="siparisDataJson"]').val();
+        console.log('----', siparisKalemlerJson);
+        if (siparisKalemlerJson == "") return; 
+        var obj = JSON.parse(siparisKalemlerJson);
+        for (var i = 0; i < obj.length; i++) {
+            var siparisKalem = {
+                id       : getGuid(),
+                stokKod  : obj[i].StokKodu,
+                stokAd   : obj[i].StokAdi,
+                miktar   : obj[i].Miktar,
+                doviz    : obj[i].DovizAdi,
+                fiyat    : obj[i].BirimFiyat,
+                tutar    : obj[i].ToplamTutar,
+                aciklama : obj[i].Aciklama
+            }
+            siparisKalemler.push(siparisKalem);
+        }
+
+        StokKalemTabloyaYaz();
+        console.log(obj);
+    });
+
+
+    $("#siparisDetayGirisForm").validate({
+        rules: {
+            "stokSec": {
+                required: true,
+                valBosmu: true
+            },
+            "miktar": {
+                required: true,
+                big0: true,
+            },
+            "birimFiyatDoviz": {
+                required: true,
+                big0: true,
+            }
+        }
+    });
+
+ 
+    
+    
+
+    function KalemEkle() {
+        $("#stokAciklama").val("");
+        $("#stokMiktar").val(0);
+
+
+        $('#modalKalemEkle').modal('show')
+            .on('click', '#modalBtnKalemEkle', function (e) {
+                stokMiktar = $("#stokMiktar").val();
+                if (stokMiktar > 0) {
+                    $('#modalUyari').text('');
+                    if (index > -1) {
+                        StokBilgileriEkle(index);
+                        index = -1;
+                        stokMiktar = 0;
+                        $('#modalKalemEkle').modal('hide');
+                    } else {
+                        $('#modalUyari').text('Listeden stok seçmelisiniz.');
+                    }
+                } else {
+                    $('#modalUyari').text('Miktarı sıfırdan büyük olmalıdır.');
+                }
+            });
+           
+    }
+
+    function DataBind(liste) {
+
+        var SetData = $('#tableBodyStoklar');
+
+        for (var i = 0; i < liste.length; i++) {
+            var Data = "<tr id='" + i + "'>" +
+                "<td>" + "<input type = 'radio' name = 'reqradio' /> " + (i + 1) + "</td>" +
+                "<td id='stokKod_" + i + "' , data-satisFiyat='" + liste[i].dovizSatisFiyat + "', data-doviz='" + liste[i].satisDovizAdi +"'>" + liste[i].stokKodu + " </td>" +
+                "<td id='stokAd_"+i+"'      >" + liste[i].stokAdi + "</td>" +
+                "<td id='stokDoviz_" + i + "'   >" + liste[i].satisDovizAdi + "</td>" +
+                "<td id='stokFiyat_" + i + "'   >" + liste[i].dovizSatisFiyat + "</td>" +
+                "</tr>";
+            SetData.append(Data);
+            $("#LoadingStatus").html("  ");
+        }
+
+        $('#tableStoklar').DataTable({
+            "language": {
+                "lengthMenu": "Her sayfada _MENU_ kayıt",
+                "zeroRecords": "Kayıt bulunamadı",
+                "info": "Sayfa : _PAGE_ / _PAGES_",
+                "sSearch": "Listede Ara : ",
+                "filter": "Ara",
+                "infoEmpty": "Kayıt yok",
+                "infoFiltered": "(Filtrelenen toplam kayıt _MAX_)",
+                "oPaginate": {
+                    "sFirst": "İlk Kayıt",
+                    "sPrevious": "Önceki",
+                    "sNext": "Sonraki",
+                    "sLast": "Son Kayıt"
+                }
+            }
+        });
+
+        $('.dataTables_length').addClass('bs-select');
+        $('#tableStoklar tr').click(function () {
+            index = $(this).attr('id');
+            $('#tableStoklar tr').removeClass("active");
+            $(this).addClass("active");
+            $(this).find('[name="reqradio"]').prop('checked', true);
+        });
+
+    }
+
+    function StokKoduIleAra() {
+        
+        $('#tableStoklar').dataTable().fnDestroy();
+        $("#tableBodyStoklar").empty();
+
+        var aranan = $("#inputStokKoduAra").val();
+        $.get("/StokRapor/StokBulStokKoduIle?stokKod=" + aranan, DataBind);
+    }
+
+    function StokAdiIleAra() {
+        $('#tableStoklar').dataTable().fnDestroy();
+        $("#tableBodyStoklar").empty();
+        
+        var aranan = $("#inputStokAdiAra").val();
+        $.get("/StokRapor/StokBulStokAdiIle?stokAd=" + aranan, DataBind);
+    }
+
+    function StokBilgileriEkle(index) {
+        var doviz = $("#stokKod_" + index).data('doviz');
+        var fiyat = $("#stokKod_" + index).data('satisfiyat');
+        console.log("doviz", doviz);
+        console.log("fiyat", fiyat);
+
+        var siparisKalem = {
+            id      : getGuid(),
+            stokKod : $("#stokKod_" + index).text(),
+            stokAd  : $("#stokAd_" + index).text(),
+            miktar  : stokMiktar,
+            doviz   : $("#stokKod_" + index).data('doviz'),
+            fiyat: fiyat,
+            tutar: fiyat * stokMiktar,
+            aciklama: $("#stokAciklama").val()
+        }
+
+        siparisKalemler.push(siparisKalem);
+        StokKalemTabloyaYaz();
+        console.log(siparisKalemler);
+    }
+
+    function StokKalemTabloyaYaz() {
+        $("#tableBodySiparisKalemler").empty();
+        var SetData = $('#tableBodySiparisKalemler');
+
+        for (var i = 0; i < siparisKalemler.length; i++) {
+            var Data = "<tr id='" + siparisKalemler[i].id + "'>" +
+                "<td>" + (i + 1) + "</td>" +
+                "<td>" + siparisKalemler[i].stokKod     + "</td>" +
+                "<td>" + siparisKalemler[i].stokAd      + "</td>" +
+                "<td>" + siparisKalemler[i].miktar  + "</td>" +
+                "<td>" + siparisKalemler[i].doviz   + "</td>" +
+                "<td>" + siparisKalemler[i].fiyat   + "</td>" +
+                "<td>" + siparisKalemler[i].tutar   + "</td>" +
+                "<td>" + siparisKalemler[i].aciklama   + "</td>" +
+                "<td>" + "<a class='btn btn-warning' onClick='KalemDuzenle(\"" + siparisKalemler[i].id + "\")'><i class='far fa-edit'></i></a></td>" +
+                "</tr>";
+            SetData.append(Data);
+            //+ "<a class='btn btn-danger' onClick='KalemSil(\"" + siparisKalemler[i].id + "\")'><i class='far fa-trash-alt'></i></a>" +
+        }
+    }
+
+    function getGuid() {
+        var d = new Date().getTime();
+
+        var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+
+        return guid;
+    }
+
+    function KalemDuzenle(id) {
+        //console.log(id, siparisKalemler);
+        var obj = siparisKalemler.find(x => x.id === id);
+        var index = siparisKalemler.findIndex(obj => obj.id == id);
+        console.log(id,obj);
+        $('#duzenleStokAd').text(obj.stokAd);
+        $('#duzenleMiktar').val(obj.miktar);
+        $('#duzenleAciklama').val(obj.aciklama);
+        $('#modalKalemGuncelle').modal('show')
+            .on('click', '#stokEkle', function (e) {
+                stokMiktar = $("#duzenleMiktar").val();
+                if (stokMiktar > 0) {
+                    $('#modalUyariDuzenle').text('');
+                    siparisKalemler[index].miktar = $('#duzenleMiktar').val();
+                    siparisKalemler[index].aciklama = $('#duzenleAciklama').val();
+                    console.log(siparisKalemler[index]);
+                    StokKalemTabloyaYaz();
+                    $('#modalKalemGuncelle').modal('hide');
+                } else {
+                    $('#modalUyariDuzenle').text('Miktarı sıfırdan büyük olmalıdır.');
+                }
+            }).on('click', '#stokSil', function (e) {
+
+                var sipKalemler = siparisKalemler.filter(x => x.id !== id);
+
+                siparisKalemler = sipKalemler;
+                StokKalemTabloyaYaz();
+            });
+    }
+
+
+    function SiparisKaydet() {
+
+        var _siparisAciklama = $('#siparisBaslik').find('input[id="siparisAciklama"]').val();
+        var _musteri = $('#siparisBaslik').find('input[id="musteriAdi"]').val();
+        
+        console.log(_musteri);
+
+        if (_musteri == undefined || _musteri == "" || _musteri == null) {
+            alert("Müşteri alanı boş geçilemez");
+            return;
+        }
+        if (siparisData.detay.length == 0) {
+            alert("En az bir(1) tane sipariş kalemi girmelisiniz");
+            return;
+        }
+
+        siparisData.belgeNo = $('#siparisBaslik').find('input[id="belgeNo"]').val();
+        siparisData.tarih = $('#siparisBaslik').find('input[id="tarih"]').val();
+        siparisData.musteriAdi = _musteri;
+        siparisData.aciklama = _siparisAciklama;
+
+        console.log(siparisData);
+
+        $.ajax({
+            type: "POST",
+            url: "/MotoServis/SiparisKaydet",
+            data: siparisData,
+            success: function (result) {
+                console.log(result)
+                if (result.durum == -1) {
+                    console.log(result.mesaj);
+                    waitingDialog.hide();
+                    alert("İşlem Sırasında hata oluştu");
+                }
+                else if (result.durum == 0) {
+                    waitingDialog.hide();
+                    window.location.href = "/FideSiparis/Liste";
+                } else if (result.durum == 1) {
+                    waitingDialog.hide();
+                    alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                    window.location.href = "/FideSiparis/Liste";
+                }
+
+            }
+        })
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function SiparisBilgileriniYukle() {
+
+        console.log("----****----");
+
+        $.get("/MotoSiparis/SiparisBilgileri?belgeNo=" + $("#belgeNo").val(), null, DataBind);
+        //function DataBind(data) {
+        //    console.log(data);
+        //    if (data == "yeni") return;
+
+        //    var detay = data.siparisDetay;
+
+        //    if (data == "") { window.location.href = "/FideSiparis/Liste"; }
+
+        //    siparisBilgiler.SiparisBaslik.Guid          = 0;
+        //    siparisBilgiler.SiparisBaslik.BelgeNo       = data.siparisBaslik.belgeNo;
+        //    siparisBilgiler.SiparisBaslik.Tarih         = data.siparisBaslik.tarih;
+        //    siparisBilgiler.SiparisBaslik.CariKodu      = data.siparisBaslik.cariKodu;
+        //    siparisBilgiler.SiparisBaslik.CariAdi       = data.siparisBaslik.cariAdi;
+        //    siparisBilgiler.SiparisBaslik.Aciklama      = data.siparisBaslik.aciklama;
+        //    siparisBilgiler.SiparisBaslik.OnayDurum     = data.siparisBaslik.onayDurum;
+        //    siparisBilgiler.SiparisBaslik.OnayDurumAdi  = data.siparisBaslik.onayDurumAdi;
+
+
+
+        //    console.log(detay);
+
+        //    for (var i = 0; i < detay.length; i++) {
+
+        //        var kalem = {
+        //            "Id": detay[i].id,
+        //            "Eklendi": 0,
+        //            "Duzenlendi": 0,
+        //            "Silindi": 0,
+        //            "StokKodu": detay[i].stokKodu.toString(),
+        //            "Birim": detay[i].birim.toString(),
+        //            "Miktar": detay[i].miktar.toFixed(2).toString().replace('.', ','),
+        //            "Doviz": detay[i].doviz.toString(),
+        //            "DovizAdi": detay[i].dovizAdi.toString(),
+        //            "Kur": detay[i].kur.toFixed(2).toString().replace('.', ','),
+        //            "BirimTutar": detay[i].birimTutar.toFixed(2).toString().replace('.', ','),
+        //            "StokAdi": detay[i].stokAdi.toString(),
+        //            "BirimTutarDoviz": detay[i].birimTutarDoviz.toFixed(2).toString().replace('.', ','),
+        //            "ToplamTutar": detay[i].toplamTutar.toFixed(2).toString().replace('.', ','),
+        //            "ToplamTutarDoviz": detay[i].toplamTutarDoviz.toFixed(2).toString().replace('.', ','),
+        //            "Aciklama": detay[i].aciklama
+        //        };
+        //        //console.log(kalem);
+        //        siparisBilgiler.SiparisDetay.push(kalem);
+        //    };
+        //    console.log("DURUM : ");
+        //    console.log(siparisBilgiler);
+        //    TabloyaEkle(siparisBilgiler);
+
+
+        //    BaslikDoldur();
+        //}
+
+    }
+
+    function dovizKurListesiGetir() {
+        $.get("/FideSiparis/DovizKurListesi", null, DataBind);
+        function DataBind(dovizKurData) {
+
+            var str1 = "";
+            for (var i = 0; i < dovizKurData.length; i++) {
+                if (i == 0) {
+                    $("#kur").val(dovizKurData[i].kur);
+                }
+                str1 += "<option value='" + dovizKurData[i].sira + "' data-kur='" + dovizKurData[i].kur + "' >" + dovizKurData[i].doviz + "</option>";
+            }
+            $("#dovizSec").append(str1);
+        }
+
+    }
+
+
+    $("#cariSec").on('change', function (e) {
+
+
+        var _cariKod = this.value;
+
+         $.get("/FideSiparis/CariBakiyeRisk?cariKod=" + _cariKod, null, DataBind);
+        function DataBind(cariRiskBakiyeData) {
+            console.log(cariRiskBakiyeData);
+            var toplamRisk = cariRiskBakiyeData.risk;
+            var bakiye = cariRiskBakiyeData.bakiye;
+
+            $("#risk").val(parseFloat(toplamRisk).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $("#bakiye").val(parseFloat(bakiye).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+        }
+
+        console.log("bakiye:", bakiye);
+
+         var il             = $(this).find(':selected').data('il');
+         var ilce           = $(this).find(':selected').data('ilce');
+         var adres          = $(this).find(':selected').data('adres');
+         var telNo          = $(this).find(':selected').data('telno');
+         var ePosta         = $(this).find(':selected').data('eposta');
+         var vergiDairesi   = $(this).find(':selected').data('vergidairesi');
+         var vergiNumarasi  = $(this).find(':selected').data('verginumarasi');
+
+
+
+         $("#cariIl").val(il);
+         $("#cariIlce").val(ilce);
+         $("#cariAdres").val(adres);
+         $("#telNo").val(telNo);
+         $("#ePosta").val(ePosta);
+         $("#vergiDairesi").val(vergiDairesi);
+         $("#vergiNumarasi").val(vergiNumarasi);
+         //$("#toplamRisk").val(parseFloat(toplamRisk).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+
+
+
+
+
+    });
+
+    function stokGrupListesiGetir() {
+        $.get("/FideSiparis/StokGrupListesi", null, DataBind);
+        function DataBind(stokGrupData) {
+
+            var str1 = "<option value=''>---- Kategori Seç ----</option>";
+            //console.log(stokGrupData);
+            for (var i = 0; i < stokGrupData.length; i++) {
+                str1 += "<option value='" + stokGrupData[i].grupKodu + "'>" + stokGrupData[i].grupIsim + "</option>";
+            }
+            $("#stokGrupSec").append(str1);
+        }
+
+    }
+
+    function stokListesiGetir(stokGrupKod) {
+        $.get("/FideSiparis/StokListesi?stokGrupKod=" + stokGrupKod, null, DataBind);
+        function DataBind(stokData) {
+            $('#stokSec').empty()
+            var str1 = "<option value=''>---- Stok Seç ----</option>";
+            //console.log(stokData);
+            for (var i = 0; i < stokData.length; i++) {
+                str1 += "<option value='" + stokData[i].stokKodu + "' data-birim='" + stokData[i].olcuBr + "' data-birimFiyatDoviz='" + stokData[i].satisFiyat + "' >" + stokData[i].stokAdi + "</option>";
+            }
+            $("#stokSec").append(str1);
+        }
+
+    }
+
+    $("#stokGrupSec").on('change', function (e) {
+        //var optionSelected = $("option:selected", this);
+        var valueSelected = this.value;
+        //console.log(optionSelected);
+        stokListesiGetir(valueSelected);
+
+        $("#birim").val("");
+        $("#birimFiyatDoviz").val("");
+    });
+
+    $("#stokSec").on('change', function (e) {
+        var brm = $(this).find(':selected').data('birim');
+        var stsFyt = $(this).find(':selected').data('birimFiyatDoviz');
+        $("#birim").val(brm);
+
+        if (stsFyt == null) {
+            stsFyt = '';
+        }
+
+        $("#birimFiyatDoviz").val(stsFyt);
+
+        fiyatGuncelle();
+
+    });
+
+    $("#dovizSec").on('change', function (e) {
+        var doviz = $(this).find(':selected').text();
+        var kur = $(this).find(':selected').data('kur');
+        $("#kur").val(kur);
+        $("#lblbirimFiyatDoviz").text("Br.Fiyat(" + doviz + ")");
+        $("#lblToplamTutarDoviz").text("Top.Tutar(" + doviz + ")");
+        var ynFyt = $("#stokSec").find(':selected').data("birimFiyatDoviz");
+        $("#birimFiyatDoviz").val(ynFyt);
+
+    });
+
+    function fiyatGuncelle() {
+        var brmFyt = $("#birimFiyatDoviz").val().replace(',', '');;
+        var kur = $("#dovizSec").find(':selected').data('kur');
+        var miktar = $("#miktar").val();
+        var brmFytDvz = (brmFyt * kur).toFixed(2);
+        $("#birimFiyat").val(brmFytDvz);
+        $("#toplamTutar").val((brmFytDvz * miktar).toFixed(2));
+        $("#toplamTutarDoviz").val((brmFyt * miktar).toFixed(2));
+    }
+
+    var siparisBilgiler = {
+        SiparisBaslik: {
+            "Guid": "",
+            "FtirSip": "",
+            "BelgeNo": "",
+            "Tarih": "",
+            "CariKodu": "",
+            "CariAdi": "",
+            "Aciklama": "",
+        }, SiparisDetay: []
+    };
+
+    function EkleDuzenle() {
+
+        var validMi = $("#siparisDetayGirisForm").valid();
+
+
+        if (validMi == false) {
+            return;
+        }
+
+        if ($("#Id").val() == 0) {
+
+            _guid = $("#siparisBaslikGuid").val();
+            _belgeNo = $("#belgeNo").val();
+            _tarih = $("#tarih").val();
+            _cariKodu = $("#cariSec").find(':selected').val();
+            _cariAdi = $("#cariSec").find(':selected').text();
+            _aciklama = $("#aciklama").val();
+
+            siparisBilgiler.SiparisBaslik.Guid = _guid;
+            siparisBilgiler.SiparisBaslik.BelgeNo = _belgeNo;
+            siparisBilgiler.SiparisBaslik.Tarih = _tarih;
+            siparisBilgiler.SiparisBaslik.CariKodu = _cariKodu;
+            siparisBilgiler.SiparisBaslik.CariAdi = _cariAdi;
+            siparisBilgiler.SiparisBaslik.Aciklama = _aciklama;
+
+
+            var _id = Guid();
+            var _stokKodu = $("#stokSec").find(':selected').val();
+            var _stokAdi = $("#stokSec").find(':selected').text();
+            var _birim = $("#stokSec").find(':selected').data("birim");
+            var _miktar = $("#miktar").val();
+            var _doviz = $("#dovizSec").find(':selected').val();
+            var _dovizAdi = $("#dovizSec").find(':selected').text();
+            var _kur = $("#kur").val();
+            var _birimTutar = $("#birimFiyat").val();
+            var _birimTutarDoviz = $("#birimFiyatDoviz").val();
+            var _toplamTutar = $("#toplamTutar").val();
+            var _toplamTutarDoviz = $("#toplamTutarDoviz").val();
+            var _kalemAciklama = $("#kalemAciklama").val();
+
+
+
+            var kalem = {
+                "Id": _id,
+                "Eklendi": 1,
+                "Duzenlendi": 0,
+                "Silindi": 0,
+                "StokKodu": _stokKodu.toString(),
+                "Birim": _birim.toString(),
+                "Miktar": parseFloat(_miktar).toFixed(2).toString().replace('.', ','),
+                "Doviz": _doviz.toString(),
+                "DovizAdi": _dovizAdi.toString(),
+                "Kur": parseFloat(_kur).toFixed(2).toString().replace('.', ','),
+                "BirimTutar":parseFloat( _birimTutar).toFixed(2).toString().replace('.', ','),
+                "StokAdi": _stokAdi.toString(),
+                "BirimTutarDoviz": parseFloat(_birimTutarDoviz).toFixed(2).toString().replace('.', ','),
+                "ToplamTutar":parseFloat( _toplamTutar).toFixed(2).toString().replace('.', ','),
+                "ToplamTutarDoviz": parseFloat(_toplamTutarDoviz).toFixed(2).toString().replace('.', ','),
+                "Aciklama": _kalemAciklama
+            };
+
+            //console.log(kalem);
+
+            siparisBilgiler.SiparisDetay.push(kalem);
+
+
+        }
+        else {
+            var _id = $("#Id").val();
+            var _stokKodu = $("#stokSec").find(':selected').val();
+            var _stokAdi = $("#stokSec").find(':selected').text();
+            var _birim = $("#stokSec").find(':selected').data("birim");
+            var _miktar = $("#miktar").val();
+            var _doviz = $("#dovizSec").find(':selected').val();
+            var _dovizAdi = $("#dovizSec").find(':selected').text();
+            var _kur = $("#kur").val();
+            var _birimTutar = $("#birimFiyat").val();
+            var _birimTutarDoviz = $("#birimFiyatDoviz").val();
+            var _toplamTutar = $("#toplamTutar").val();
+            var _toplamTutarDoviz = $("#toplamTutarDoviz").val();
+            var _kalemAciklama = $("#kalemAciklama").val();
+
+            $.each(siparisBilgiler.SiparisDetay, function (i, v) {
+                console.log(v.Id + " = " + _id);
+                if (v.Id == _id) {
+                    //console.log("Miktar = " + _miktar);
+                        v.Id = _id,
+                        v.Eklendi = 1,
+                        v.Duzenlendi = 1,
+                        v.Silindi = 0,
+                        v.StokKodu = _stokKodu.toString(),
+                        v.Birim = _birim.toString(),
+                        v.Miktar    = parseFloat(_miktar).toFixed(2).toString().replace('.', ','),
+                        v.Doviz     = _doviz.toString(),
+                        v.DovizAdi  = _dovizAdi.toString(),
+                        v.Kur       = parseFloat(_kur).toFixed(2).toString().replace('.', ','),
+                        v.BirimTutar=parseFloat( _birimTutar).toFixed(2).toString().replace('.', ','),
+                        v.StokAdi   = _stokAdi.toString(),
+                        v.BirimTutarDoviz= parseFloat(_birimTutarDoviz).toFixed(2).toString().replace('.', ','),
+                        v.ToplamTutar = parseFloat( _toplamTutar).toFixed(2).toString().replace('.', ','),
+                        v.ToplamTutarDoviz = parseFloat(_toplamTutarDoviz).toFixed(2).toString().replace('.', ','),
+                        v.Aciklama = _kalemAciklama
+                }
+            });
+
+
+        }
+        TabloyaEkle(siparisBilgiler);
+
+
+    }
+
+    function BaslikDoldur() {
+
+        $("#belgeNo").val(siparisBilgiler.SiparisBaslik.BelgeNo);
+        $("#tarih").val(moment(siparisBilgiler.SiparisBaslik.Tarih).format('DD-MM-YYYY'));
+        //$("#cariSec").select2().select2('val',siparisBilgiler.SiparisBaslik.CariKodu);
+
+        console.log("Cari Değiştir : " + siparisBilgiler.SiparisBaslik.CariKodu);
+        $("#cariSec").val(siparisBilgiler.SiparisBaslik.CariKodu).trigger('change');
+
+        console.log($("#cariSec").val());
+        $("#aciklama").val(siparisBilgiler.SiparisBaslik.Aciklama);
+        $("#siparisDurum").val(siparisBilgiler.SiparisBaslik.OnayDurum);
+
+    }
+
+    function TabloyaEkle(siparisBilgiler) {
+        var data = siparisBilgiler.SiparisDetay;
+        console.log(data);
+        $("#tableBodyTalepSiparisStoklar").empty();
+        var SetData = $('#tableBodyTalepSiparisStoklar');
+        var ytk = '@ViewBag.siparisDuzenleYetki';
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].Silindi == 0) {
+                var satir = "<tr id='row_" + data[i].Id + "' value='" + data[i].Id + "'>" +
+                    "<td>" + (i + 1) + "</td>" +
+                    "<td>" + data[i].StokKodu + "</td>" +
+                    "<td>" + data[i].StokAdi + "</td>" +
+                    "<td>" + data[i].Birim + "</td>" +
+                    "<td>" + data[i].Miktar + "</td>" +
+                    "<td>" + data[i].DovizAdi + "</td>" +
+                    "<td>" + data[i].Kur + "</td>" +
+                    "<td>" + data[i].BirimTutar + "</td>" +
+                    "<td>" + data[i].BirimTutarDoviz.replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                    "<td>" + data[i].ToplamTutar.replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                    "<td>" + data[i].ToplamTutarDoviz.replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                    "<td>" + data[i].Aciklama + "</td>";
+                //console.log(ytk);
+                if ( ytk == 'True') {
+                    satir = satir + "<td>" + "<a class='btn btn-warning' onClick='KayitDuzenle(\"" + data[i].Id + "\")'><i class='far fa-edit'></i></a>" + " "
+                        + "<a class='btn btn-danger' onClick='KayitSil(\"" + data[i].Id + "\")'><i class='far fa-trash-alt'></i></a>" + "</td>" +
+                        "</tr>";
+                } else {
+                    satir = satir + "<td>" + "<a class='btn btn-warning disabled'><i class='far fa-edit'></i></a>" + " "
+                        + "<a class='btn btn-danger disabled' ><i class='far fa-trash-alt'></i></a>" + "</td>" +
+                        "</tr>";
+                }
+
+                SetData.append(satir);
+            }
+
+        }
+
+        $("#siparisDetayGirisForm")[0].reset();
+        $("#Id").val(0);
+        $('#stokSec').empty();
+        var validator = $("#siparisDetayGirisForm").validate();
+        validator.resetForm();
+    }
+
+    function Guid() {
+        var d = new Date().getTime();
+
+        var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+
+
+        return guid;
+    }
+
+    function toCamel(o) {
+        var newO, origKey, newKey, value
+        if (o instanceof Array) {
+            return o.map(function(value) {
+        if (typeof value === "object") {
+          value = toCamel(value)
+        }
+        return value
+        })
+        } else {
+          newO = {}
+          for (origKey in o) {
+            if (o.hasOwnProperty(origKey)) {
+              newKey = (origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey).toString()
+              value = o[origKey]
+              if (value instanceof Array || (value !== null && value.constructor === Object)) {
+                value = toCamel(value)
+              }
+              newO[newKey] = value
+            }
+          }
+        }
+        return newO
+    }
+
+    function KayitDuzenle(id) {
+
+        console.log(id);
+
+        var data = "";
+        var node = $.each(siparisBilgiler.SiparisDetay, function (i, v) {
+            if (v.Id == id) {
+                console.log(v);
+                data = v;
+            }
+        });
+
+        //console.log(data);
+
+        $("#Id").val(data.Id);
+        $('#stokSec').empty()
+        var str1 = "<option value='" + data.StokKodu + "' data-birim='" + data.Birim + "' data-birimFiyatDoviz='" + data.BirimTutar + "' >" + data.StokAdi + "</option>";
+        $("#stokSec").append(str1);
+        $("#stokSec").val(data.StokKodu).trigger('change');
+        $("#birim").val(data.Birim);
+        $("#miktar").val(data.Miktar.replace(',', '.'));
+        $("#dovizSec").val(data.Doviz);
+        $("#kur").val(data.Kur.replace(',', '.'));
+        $("#birimFiyat").val(data.BirimTutar.replace(',', '.'));
+        $("#birimFiyatDoviz").val(data.BirimTutarDoviz.replace(',', '.'));
+        $("#toplamTutar").val(data.ToplamTutar.replace(',', '.'));
+        $("#toplamTutarDoviz").val(data.ToplamTutarDoviz.replace(',', '.'));
+        $("#kalemAciklama").val(data.Aciklama);
+
+
+
+    }
+
+    function KayitSil(id) {
+
+        $('#modalKayitSil').modal('toggle')
+            .on('click', '#delete', function (e) {
+                $.each(siparisBilgiler.SiparisDetay, function (i, v) {
+                    console.log(v.Id + " = " + id);
+                    if (v.Id == id) {
+                        v.Silindi = 1
+                    }
+                });
+                TabloyaEkle(siparisBilgiler);
+            });
+
+
+    }
+
+    function xSiparisKaydet() {
+        var cariVal = $("#cariSec").find(':selected').val();
+
+        if (cariVal == "") {
+            alert("Cari Seçilmeden kaydedilemez!!!");
+            return;
+        }
+
+        var toplamTut = 0;
+        for (var i = 0; i < siparisBilgiler.SiparisDetay.length; i++)
+        {
+            toplamTut = toplamTut + parseFloat(siparisBilgiler.SiparisDetay[i].ToplamTutar);
+        }
+
+        var tRisk =  $("#cariSec").find(':selected').data('toplamrisk');
+        var toplamRisk =parseFloat(tRisk);
+
+        if (toplamRisk < toplamTut) {
+
+            console.log("risk :" + toplamRisk + "toplam tutar :" + toplamTut);
+
+            $('#modalRiskUyari').modal('toggle')
+                .on('click', '#gitListe', function (e) {
+                    $.each(siparisBilgiler.SiparisDetay, function (i, v) {
+                        return;
+                        //window.location.href = "/FideSiparis/Liste";
+                    });
+                });
+        }
+        else
+        {
+            waitingDialog.show('Kaydediliyor...');
+
+            var _cariKodu = $("#cariSec").find(':selected').val();
+            var _cariAdi = $("#cariSec").find(':selected').text();
+            var _aciklama = $("#aciklama").val();
+
+            if (siparisBilgiler.SiparisBaslik.CariKodu != _cariKodu) {
+                siparisBilgiler.SiparisBaslik.CariKodu = _cariKodu;
+                siparisBilgiler.SiparisBaslik.CariAdi = _cariAdi;
+                siparisBilgiler.SiparisBaslik.Guncellendi = 1;
+            }
+            if (siparisBilgiler.SiparisBaslik.Aciklama != _aciklama) {
+                siparisBilgiler.SiparisBaslik.Aciklama = _aciklama;
+                siparisBilgiler.SiparisBaslik.Guncellendi = 1;
+            }
+
+            if (siparisBilgiler.SiparisBaslik.Aciklama == "") {
+
+                var maxTutar = 0;
+                var stok = "";
+                console.log("-----------**--------" + siparisBilgiler.SiparisDetay.length);
+
+                for (var i = 0; i < siparisBilgiler.SiparisDetay.length; i++) {
+                    console.log(siparisBilgiler.SiparisDetay[i].ToplamTutar);
+                    if (parseFloat(siparisBilgiler.SiparisDetay[i].ToplamTutar) > maxTutar) {
+                        maxTutar = parseFloat(siparisBilgiler.SiparisDetay[i].ToplamTutar) ;
+                        stok = siparisBilgiler.SiparisDetay[i].StokAdi;
+
+                    }
+                }
+
+                siparisBilgiler.SiparisBaslik.Aciklama = stok; //+ " : " + maxTutar;
+                siparisBilgiler.SiparisBaslik.Guncellendi = 1;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/FideSiparis/SiparisKaydet",
+                data: siparisBilgiler,
+                success: function (result) {
+                    //console.log(result)
+                    if (result.durum == -1) {
+                        console.log(result.mesaj);
+                        waitingDialog.hide();
+                        alert("İşlem Sırasında hata oluştu");
+                    }
+                    else if (result.durum == 0) {
+                        waitingDialog.hide();
+                        window.location.href = "/FideSiparis/Liste";
+                    } else if (result.durum == 1) {
+                        waitingDialog.hide();
+                        alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                        window.location.href = "/FideSiparis/Liste";
+                    }
+
+                }
+            })
+        }
+
+
+    }
+
+    function SiparisOnay(kod) {
+
+        waitingDialog.show('Teklif Onaylanıyor...');
+        //siparisBilgiler.SiparisBaslik.FtirSip='6',
+        //console.log(siparisBilgiler);
+
+        $.ajax({
+            type: "POST",
+            url: "/FideSiparis/TeklifSiparisOnay?belgeNo=" + siparisBilgiler.SiparisBaslik.BelgeNo,
+            success: function (result) {
+                //console.log(result)
+                if (result.durum == -1) {
+                    console.log(result.mesaj);
+                    waitingDialog.hide();
+                    alert("İşlem Sırasında hata oluştu");
+                }
+                else if (result.durum == 0) {
+                    waitingDialog.hide();
+                    window.location.href = "/FideSiparis/Liste";
+                } else if (result.durum == 1) {
+                    waitingDialog.hide();
+                    alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                    window.location.href = "/FideSiparis/Liste";
+                }
+
+            }
+        })
+
+    }
+
+    function SiparisIptal(kod) {
+
+        waitingDialog.show('Teklif İptal Ediliyor...');
+
+        $.ajax({
+            type: "POST",
+            url: "/FideSiparis/SiparisOnayIptal?belgeNo=" + siparisBilgiler.SiparisBaslik.BelgeNo + "&onayKodu=C",
+            success: function (result) {
+                //console.log(result)
+                if (result.durum == -1) {
+                    console.log(result.mesaj);
+                    waitingDialog.hide();
+                    alert("İşlem Sırasında hata oluştu");
+                }
+                else if (result.durum == 0) {
+                    waitingDialog.hide();
+                    window.location.href = "/FideSiparis/Liste";
+                } else if (result.durum == 1) {
+                    waitingDialog.hide();
+                    alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                    window.location.href = "/FideSiparis/Liste";
+                }
+
+            }
+        })
+
+    }
+</script> 

@@ -21,6 +21,14 @@ namespace InnovaApp.DataAccess.Data.FideSiparis
             _userRepo = new UserRepository();
         }
 
+        public CariKart GetCariKart(Expression<Func<CariKart, bool>> filter = null)
+        {
+            if (filter == null)
+                return _context.CariKart.FirstOrDefault();
+            else
+                return _context.CariKart.Where(filter).FirstOrDefault();
+        }
+
         public List<CariKart> CariKartlar(Expression<Func<CariKart, bool>> filter = null)
         {
             if (filter == null)
@@ -189,6 +197,18 @@ namespace InnovaApp.DataAccess.Data.FideSiparis
         {
             var val = _context.TeklifBaslik.Where(x => x.BelgeNo == belgeNo).FirstOrDefault();
             return val;
+            //return !string.IsNullOrEmpty(stokKodu)? _context.Stok.Where(x=>x.StokKodu== stokKodu).ToList(): _context.Stok.ToList();
+        }
+
+        public void TeklifSil(string belgeNo)
+        {
+            using (var context = new NetsisContext())
+            {
+                SqlParameter _belgeNo = new SqlParameter("@fatirsNo", belgeNo);
+                SqlParameter _fisNo = new SqlParameter("@fisNo", belgeNo);
+                context.Database.ExecuteSqlCommand("delete from  TBLTEKLIFMAS where FATIRS_NO= @fatirsNo", _belgeNo);
+                context.Database.ExecuteSqlCommand("delete from  TBLTEKLIFTRA where FISNO= @fisNo", _fisNo);
+            }
             //return !string.IsNullOrEmpty(stokKodu)? _context.Stok.Where(x=>x.StokKodu== stokKodu).ToList(): _context.Stok.ToList();
         }
 

@@ -131,4 +131,34 @@ namespace InnovaApp.UI.Web.Models.FideSiparis
         public List<SiparisDetayModel> SiparisDetay { get; set; }
     }
 
+
+    public class TeklifGirisModel
+    {
+        public string belgeNo { get; set; }
+
+        public DateTime tarih { get; set; }
+
+        public string musteriAdi { get; set; }
+
+        public string aciklama { get; set; }
+
+        public string onayDurumKodu { get; set; }
+
+        public string onayDurumAdi { get; set; }
+
+        public string yetki { get; set; }
+
+        public string firmaCariKodu { get; set; }
+
+        public string firmaCariAdi { get; set; }
+
+        public string durumAciklama { get; set; }
+        
+        public string siparisDataJson { get; set; }
+        
+        public List<CariKart> cariListe { get; set; }
+
+        public SiparisBaslikModel SiparisBaslik { get; set; }
+        public List<SiparisDetayModel> SiparisDetay { get; set; }
+    }
 }

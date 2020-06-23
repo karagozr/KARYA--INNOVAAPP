@@ -54,7 +54,8 @@
             <button id="btnFiltreTemizle" type="submit" class="btn btn-secondary " onclick="FltreTemizle()" style="width:100px;"><i class="fas fa-eraser"></i> Temizle</button>
             @if (ViewBag.yeniSiparisYetki)
             {
-                <a id="btnYeniTeklif" class="btn btn-success " href="/FideSiparis/Detay?belgeNo=" style="width:100px;"><i class="far fa-plus-square"></i> Yeni</a>
+                <a id="btnYeniTeklif" class="btn btn-success " href="/MotoServis/Duzenle" style="width:100px;"><i class="far fa-plus-square"></i> Yeni</a>
+                
             }
             else
             {
@@ -95,7 +96,8 @@
                                     @{i = i + 1;}
                                     <td>@i</td>
                                     <td>
-                                        <a href="#" onClick="SiparisStok('@item.BelgeNo')"><i class='fas fa-search'></i> @item.BelgeNo</a>
+                                        @*<a href="#" onClick="SiparisStok('@item.BelgeNo')"><i class='fas fa-search'></i> @item.BelgeNo</a>*@
+                                        @item.BelgeNo
                                     </td>
                                     <td>@item.Tarih</td>
                                     <td>@item.Aciklama</td>
@@ -104,15 +106,15 @@
                                     <td style="width:90px;">
                                         @if (item.OnayDurum == "A")
                                         {
-                                            <a class='btn btn-warning' href="/FideSiparis/Detay?belgeNo=@item.BelgeNo">Detay (Beklemede)<i class='far fa-edit'></i></a>
+                                            <a class='btn btn-warning' href="/MotoServis/Duzenle?belgeNo=@item.BelgeNo">Detay (Beklemede)<i class='far fa-edit'></i></a>
                                         }
                                         else if (item.OnayDurum == "B")
                                         {
-                                            <a class='btn btn-info' href="/FideSiparis/Detay?belgeNo=@item.BelgeNo">Detay (Onaylandı)<i class='far fa-edit'></i></a>
+                                            <a class='btn btn-info' href="/MotoServis/Duzenle?belgeNo=@item.BelgeNo">Detay (Onaylandı)<i class='far fa-edit'></i></a>
                                         }
                                         else
                                         {
-                                            <a class='btn btn-danger' href="/FideSiparis/Detay?belgeNo=@item.BelgeNo">Detay (İptal)<i class='far fa-edit'></i></a>
+                                            <a class='btn btn-danger' href="/MotoServis/Duzenle?belgeNo=@item.BelgeNo">Detay (İptal)<i class='far fa-edit'></i></a>
                                         }
 
                                     </td>
@@ -170,8 +172,6 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <input type="number" data-dismiss="modal" >
-                <button type="button" data-dismiss="modal" class="btn btn-warning">Ekle</button>
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Kapat</button>
             </div>
         </div>
@@ -210,36 +210,36 @@
 
     });
 
-    function SiparisStok(belgeNo) {
-        $("#tableBodyTalepSiparisStoklar").empty();
-        talepBaslikVerileriniDoldur(belgeNo);
-        $('#modalSiparisStokListe').modal('toggle');
-    }
+    //function SiparisStok(belgeNo) {
+    //    $("#tableBodyTalepSiparisStoklar").empty();
+    //    talepBaslikVerileriniDoldur(belgeNo);
+    //    $('#modalSiparisStokListe').modal('toggle');
+    //}
 
 
-    function talepBaslikVerileriniDoldur(belgeNO) {;
-        $.get("/FideSiparis/TeklifBilgileri?belgeNo=" + belgeNO, null, DataBind);
+    //function talepBaslikVerileriniDoldur(belgeNO) {;
+    //    $.get("/FideSiparis/TeklifBilgileri?belgeNo=" + belgeNO, null, DataBind);
 
-        function DataBind(baslikData) {
-            console.log(baslikData);
-            var data = baslikData.siparisDetay;
+    //    function DataBind(baslikData) {
+    //        console.log(baslikData);
+    //        var data = baslikData.siparisDetay;
 
-            var SetData = $('#tableBodyTalepSiparisStoklar');
-            for (var i = 0; i < data.length; i++) {
+    //        var SetData = $('#tableBodyTalepSiparisStoklar');
+    //        for (var i = 0; i < data.length; i++) {
 
-                var satir = "<tr id='row_" + data[i].Id + "' value='" + data[i].Id + "'>" +
-                    "<td>" + (i + 1) + "</td>" +
-                    "<td id ='stokAdi_" + 1 + "'>"  + data[i].stokAdi + "</td>" +
-                    "<td id ='birim_" + 1 + "'>"    + data[i].miktar.toFixed(2) + "</td>" +
-                    "<td id ='birim_"   + 1 + "'>"  + data[i].toplamTutar.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
-                    "<td id ='birim_" + 1 + "'>"    + data[i].aciklama + "</td></tr>";
+    //            var satir = "<tr id='row_" + data[i].Id + "' value='" + data[i].Id + "'>" +
+    //                "<td>" + (i + 1) + "</td>" +
+    //                "<td id ='stokAdi_" + 1 + "'>"  + data[i].stokAdi + "</td>" +
+    //                "<td id ='birim_" + 1 + "'>"    + data[i].miktar.toFixed(2) + "</td>" +
+    //                "<td id ='birim_"   + 1 + "'>"  + data[i].toplamTutar.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+    //                "<td id ='birim_" + 1 + "'>"    + data[i].aciklama + "</td></tr>";
 
-                    SetData.append(satir);
-            }
+    //                SetData.append(satir);
+    //        }
 
-        }
+    //    }
 
-    }
+    //}
 
 
 </script>

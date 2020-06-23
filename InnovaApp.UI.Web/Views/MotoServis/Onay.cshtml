@@ -1,0 +1,438 @@
+﻿@model InnovaApp.UI.Web.Models.FideSiparis.TeklifGirisModel
+
+<link href="/modules/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet" />
+
+<style>
+    .error {
+        color: red;
+    }
+
+    #alan {
+        font-size: 1em !important;
+    }
+
+    
+
+    tr.active td {
+        background-color: #8fc3f7;
+    }
+
+
+    .newreqtable th:last-child {
+        border-top-right-radius: 14px;
+        border-right: none;
+    }
+</style>
+
+
+
+<section class="content" id="alan">
+
+    <div class="card">
+        <header class="card-header bg-info">
+            <a href="#" data-toggle="collapse" data-target="#headerValues-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">@Model.firmaCariAdi</span>
+            </a>
+        </header>
+        <div class="collapse show" id="headerValues-area">
+            <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                <input id="siparisBelgeNo" type="hidden" value="@Model.belgeNo">
+                <form id="siparisBaslik" method="get">
+                    <div class="row">
+
+                        <input id="siparisDataJson" class="form-control" type="hidden" value="@Model.siparisDataJson">
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="belgeNo">Belge No</label>
+                                <input id="belgeNo" type="text" value="@Model.belgeNo" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="musteriAdi">Müşteri Adı</label>
+                                <input id="musteriAdi" type="text" value="@Model.musteriAdi" class="form-control" placeholder="müşteri...">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="siparisAciklama">Açıklama</label>
+                                <input id="siparisAciklama" value="@Model.aciklama" class="form-control" placeholder="açıklama...">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="tarih">SiparisTarih</label>
+                                <input id="tarih" type="datetime" class="form-control" value="@Model.tarih" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="aciklamaDuru">Durum Açıklama</label>
+                                <input id="aciklamaDuru" class="form-control" value="@Model.durumAciklama" placeholder="durum açıklama..." readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="siparisDurum">Durum</label>
+                                <select id="siparisDurum" name="siparisDurum" value="@Model.onayDurumKodu" class="form-control" readonly="readonly">
+                                    <option value="A">BEKLEMEDE</option>
+                                    <option value="B">ONAYLANDI</option>
+                                    <option value="C">İPTAL EDİLDİ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </article>
+        </div>
+
+
+    </div>
+
+
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down float-left"></i>
+            </a>
+            @*Güncellenecek yetki*@
+
+            @if (ViewBag.siparisOnayYetki)
+            {
+                <button id="btnSiparisOnayla" name="btnSiparisOnayla" type="submit" class="btn btn-success float-right" onclick="SiparisOnay('B')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş Onayla </button>
+                <button id="btnSiparisIptal" name="btnSiparisIptal" type="submit" class="btn btn-danger float-right" onclick="SiparisIptal('C')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+            }
+            else
+            {
+                <button class="btn btn-success float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Siparis Onay </button>
+                <button type="submit" class="btn btn-danger float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+            }
+
+
+            @*@if (ViewBag.siparisOnayYetki)
+        {
+            <button id="btnSiparisOnayla" name="btnSiparisOnayla" class="btn btn-success float-right" onclick="SiparisOnay('B')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Siparis Onay </button>
+            <button id="btnSiparisIptal" name="btnSiparisIptal" type="submit" class="btn btn-danger float-right" onclick="SiparisIptal('C')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+        }
+        else
+        {
+            <button class="btn btn-success float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Siparis Onay </button>
+            <button type="submit" class="btn btn-danger float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+        }*@
+
+        </header>
+
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableSiparisKalemler" class="table table-bordered table-striped table-condensed cf">
+
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>Miktar</th>
+                                <th>Döviz</th>
+                                <th>Fiyat</th>
+                                <th>Tutar</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodySiparisKalemler">
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </article> <!-- card-body.// -->
+        </div> <!-- collapse .// -->
+    </div> <!-- card.// -->
+
+</section>
+
+<div class="modal fade" id="modalKalemEkle">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalKalemEkleBaslik">ŞİPARİŞE KALEM EKLE</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="input-group col-md-6">
+                        <input id="inputStokKoduAra" type="text" class="form-control" placeholder="Stok Kodu ..." aria-label="Stok Kodu Giriniz ..." aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="btnStokKoduAra" onclick="StokKoduIleAra()">Ara</button>
+                        </div>
+                    </div>
+                    <div class="input-group col-md-6">
+                        <input id="inputStokAdiAra" type="text" class="form-control" placeholder="Stok Adı ..." aria-label="Stok Adı Giriniz ..." aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="btnStokAdiAra" onclick="StokAdiIleAra()">Ara</button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="table-responsive text-nowrap">
+                    <table id="tableStoklar" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>Döviz</th>
+                                <th>Fiyat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyStoklar">
+                        </tbody>
+
+                    </table>
+                </div>
+                <h4 id="modalUyari" style="color:maroon"></h4>
+            </div>
+            
+            <div class="modal-footer">
+                <input id="stokAciklama" type="text" class="form-control" value="" placeholder="Açıklama ..." style="min-width:120px" >
+                <input id="stokMiktar" type="number" class="form-control" value="0" placeholder="Miktar ..." style="min-width:100px; max-width:150px;">
+                <button type="button" class="btn btn-success" id="modalBtnKalemEkle">Ekle</button>
+                <button type="button" data-dismiss="modal" class="btn">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalKalemGuncelle">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>KAYDI DÜZENLE /SİL</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <h4 id="duzenleStokAd">....</h4>
+                <label for="duzenleMiktar">Miktar</label>
+                <input id="duzenleMiktar" type="number" class="form-control" value="0" placeholder="Miktar ..." style="width:160px">
+                <label for="duzenleAciklama">Açıklama</label>
+                <input id="duzenleAciklama" type="text" class="form-control" value="0" placeholder="Açıklama ..." style="width:160px">
+                <h4 id="modalUyariDuzenle" style="color:maroon"></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="stokSil">Sil</button>
+                <button type="button" class="btn btn-info" id="stokEkle">Kaydet</button>
+                <button type="button" data-dismiss="modal" class="btn">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalKayitSil">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>SATIR SİL</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                Kayıt silinsin mi?
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="delete">Delete</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalRiskUyari">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>RİSK UYARI</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                Cari riski var!!!!
+                Sipariş kaydedilemez.
+                Risk kontrolü yapınız.
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="gitListe">Teklife Dön</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/modules/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="/modules/jquery-validation/dist/localization/messages_tr.min.js"></script>
+<script src="/modules/jquery-validation/dist/additional-methods.min.js"></script>
+<script src="/modules/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
+<script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
+
+<script>
+
+    let index = -1;
+    let stokMiktar = 0;
+    let siparisKalemler = [];
+    let siparisData = {
+        belgeNo:"",
+        musteriAdi: "",
+        aciklama: "",
+        tarih: null,
+        detay: siparisKalemler
+    }
+
+    
+    $(document).ready(function () {
+        //SiparisBilgileriniYukle();
+        var siparisKalemlerJson = $('#siparisBaslik').find('input[id="siparisDataJson"]').val();
+        console.log('----', siparisKalemlerJson);
+        if (siparisKalemlerJson == "") return; 
+        var obj = JSON.parse(siparisKalemlerJson);
+        for (var i = 0; i < obj.length; i++) {
+            var siparisKalem = {
+                id       : getGuid(),
+                stokKod  : obj[i].StokKodu,
+                stokAd   : obj[i].StokAdi,
+                miktar   : obj[i].Miktar,
+                doviz    : obj[i].DovizAdi,
+                fiyat    : obj[i].BirimFiyat,
+                tutar    : obj[i].ToplamTutar,
+                aciklama : obj[i].Aciklama
+            }
+            siparisKalemler.push(siparisKalem);
+        }
+
+        StokKalemTabloyaYaz();
+        console.log(obj);
+    });
+
+
+    function getGuid() {
+        var d = new Date().getTime();
+
+        var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+
+        return guid;
+    }
+    
+    
+
+   
+    function StokKalemTabloyaYaz() {
+        $("#tableBodySiparisKalemler").empty();
+        var SetData = $('#tableBodySiparisKalemler');
+
+        for (var i = 0; i < siparisKalemler.length; i++) {
+            var Data = "<tr id='" + siparisKalemler[i].id + "'>" +
+                "<td>" + (i + 1) + "</td>" +
+                "<td>" + siparisKalemler[i].stokKod     + "</td>" +
+                "<td>" + siparisKalemler[i].stokAd      + "</td>" +
+                "<td>" + siparisKalemler[i].miktar  + "</td>" +
+                "<td>" + siparisKalemler[i].doviz   + "</td>" +
+                "<td>" + siparisKalemler[i].fiyat   + "</td>" +
+                "<td>" + siparisKalemler[i].tutar   + "</td>" +
+                "<td>" + siparisKalemler[i].aciklama   + "</td>" +
+                "</tr>";
+            SetData.append(Data);
+            //+ "<a class='btn btn-danger' onClick='KalemSil(\"" + siparisKalemler[i].id + "\")'><i class='far fa-trash-alt'></i></a>" +
+        }
+    }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+
+    function SiparisOnay(kod) {
+        var belgeNo = $('#siparisBelgeNo').val();
+        console.log("belgeNo",belgeNo);
+        waitingDialog.show('Teklif Onaylanıyor...');
+        //siparisBilgiler.SiparisBaslik.FtirSip='6',
+        //console.log(siparisBilgiler);
+
+        $.ajax({
+            type: "POST",
+            url: "/FideSiparis/TeklifSiparisOnay?belgeNo=" + belgeNo,
+            success: function (result) {
+                //console.log(result)
+                if (result.durum == -1) {
+                    console.log(result.mesaj);
+                    waitingDialog.hide();
+                    alert("İşlem Sırasında hata oluştu");
+                }
+                else if (result.durum == 0) {
+                    waitingDialog.hide();
+                    window.location.href = "/FideSiparis/Liste";
+                } else if (result.durum == 1) {
+                    waitingDialog.hide();
+                    alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                    window.location.href = "/FideSiparis/Liste";
+                }
+
+            }
+        })
+
+    }
+
+    function SiparisIptal(kod) {
+        var belgeNo = $('#siparisBelgeNo').val();
+        waitingDialog.show('Teklif İptal Ediliyor...');
+
+        $.ajax({
+            type: "POST",
+            url: "/FideSiparis/SiparisOnayIptal?belgeNo=" + belgeNo + "&onayKodu=C",
+            success: function (result) {
+                //console.log(result)
+                if (result.durum == -1) {
+                    console.log(result.mesaj);
+                    waitingDialog.hide();
+                    alert("İşlem Sırasında hata oluştu");
+                }
+                else if (result.durum == 0) {
+                    waitingDialog.hide();
+                    window.location.href = "/MotoServis/AdminListe";
+                } else if (result.durum == 1) {
+                    waitingDialog.hide();
+                    alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                    window.location.href = "/MotoServis/AdminListe";
+                }
+
+            }
+        })
+
+    }
+</script> 

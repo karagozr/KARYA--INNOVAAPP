@@ -81,7 +81,18 @@
                         </a>
                     </li>
                 }
+                @if (!string.IsNullOrEmpty(Context.Session.GetInt32("UserCariKodu").ToString()))
+                {
+                    <li class="nav-item">
+                        <a href="/CariRapor/CariHaraket?cariKodu=@Context.Session.GetString("UserCariKodu").ToString()" class="nav-link">
+                            <i class="nav-icon fas fa-universal-access"></i>
+                            <p>
+                                Cari Raporum
+                            </p>
+                        </a>
+                    </li>
 
+                }
                 @if (Context.Session.GetInt32("StokRapor") == 1)
                 {
                     <li class="nav-item">
@@ -140,14 +151,34 @@
                             <i class="far fa-paper-plane"></i>
                             <p>
                                 İş Akış
-                                <span class="right badge badge-warning">Yeni</span>
                             </p>
                         </a>
 
                     </li>
                 }
-
-
+                @if (Context.Session.GetInt32("MotoServis") == 1)
+                {
+                    <li class="nav-item">
+                        <a href="/MotoServis/Liste" class="nav-link">
+                            <i class="fas fa-motorcycle"></i>
+                            <p>
+                                Moto Servis Sipariş
+                            </p>
+                        </a>
+                    </li>
+                }
+                @if (Context.Session.GetInt32("MotoServisAdmin") == 1)
+                {
+                    <li class="nav-item">
+                        <a href="/MotoServis/AdminListe" class="nav-link">
+                            <i class="fab fa-first-order-alt"></i>
+                            <p>
+                                Moto Servis Admin
+                                <span class="right badge badge-warning">Admin</span>
+                            </p>
+                        </a>
+                    </li>
+                }
                 @*<li class="nav-header">YARDIM</li>
         <li class="nav-item">
             <a href="#" class="nav-link">

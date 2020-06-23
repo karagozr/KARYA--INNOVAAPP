@@ -274,6 +274,32 @@ namespace InnovaApp.UI.Web.Controllers
 
         }
 
+        public JsonResult TeklifSil(string belgeNo)
+        {
+            try
+            {
+                _netsisVerilerRepository.TeklifSil(belgeNo);
+                var Sonuc = new
+                {
+                    Durum = "1",
+                    Mesaj = ""
+
+                };
+                return Json(Sonuc);
+            }
+            catch (Exception ex)
+            {
+                var Sonuc = new
+                {
+                    Durum = "-1",
+                    Mesaj = ex.Message
+
+                };
+                return Json(Sonuc);
+            }
+           
+        }
+
         public JsonResult TeklifSiparisOnay(string belgeNo)
         {
             if (HttpContext.Session.GetString("UserId") == null) return Json("");
@@ -461,21 +487,21 @@ namespace InnovaApp.UI.Web.Controllers
                     detayListeModel.Add(
                         new SiparisDetayModel
                         {
-                            Aciklama = item.Aciklama,
-                            Birim = item.Birim,
-                            BirimTutar = (double)item.BirimFiyat,
+                            Aciklama    = item.Aciklama,
+                            Birim       = item.Birim,
+                            BirimTutar  = (double)item.BirimFiyat,
                             BirimTutarDoviz = (double)item.BirimFiyatDoviz,
-                            Doviz = item.Doviz.ToString(),
-                            Kur = (double)item.DovizKuru,
-                            Miktar = item.Miktar,
-                            StokAdi = item.StokAdi,
-                            StokKodu = item.StokKodu,
+                            Doviz       = item.Doviz.ToString(),
+                            Kur         = (double)item.DovizKuru,
+                            Miktar      = item.Miktar,
+                            StokAdi     = item.StokAdi,
+                            StokKodu    = item.StokKodu,
                             ToplamTutar = (double)item.ToplamTutar,
                             ToplamTutarDoviz = (double)item.ToplamTutarDoviz,
-                            Id = Guid.NewGuid().ToString(),
-                            Silindi = 0,
-                            Duzenlendi = 0,
-                            Eklendi = 0
+                            Id          = Guid.NewGuid().ToString(),
+                            Silindi     = 0,
+                            Duzenlendi  = 0,
+                            Eklendi     = 0
                         }
                         );
                 }

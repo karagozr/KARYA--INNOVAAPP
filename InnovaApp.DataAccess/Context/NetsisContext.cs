@@ -61,6 +61,8 @@ namespace InnovaApp.DataAccess.Context
 
         public DbQuery<StokKod4> StokKod4 { get; set; }
 
+        public DbQuery<EIrsaliyeSablon> EIrsaliyeSablon { get; set; }
+
 
 
 

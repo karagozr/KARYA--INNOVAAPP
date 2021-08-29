@@ -14,19 +14,23 @@
                     </a>
                 </header>
                 <div class="collapse show" id="filter-area">
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success" onclick="stokAra()" style="width:100px;"><i class="fas fa-search"></i> Ara </button>
+                        <button type="submit" class="btn btn-secondary" onclick="filtreTemizle()" style="width:100px;"><i class="fas fa-eraser"></i> Temizle </button>
+                    </div>
                     <article class="card-body" style="padding-bottom:1px;padding-top:15px">
                         <form id="stokRaporListeFilteForm" method="get">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="stokAdi">Stok Adı</label>
-                                        <input id="stokAdi" name="stokAdi" class="form-control" placeholder="Stok adı...">
+                                        <label for="stokKodu">Stok Kodu</label>
+                                        <input id="stokKodu" name="stokKodu" class="form-control" placeholder="Stok kodu...">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="stokKodu">Stok Kodu</label>
-                                        <input id="stokKodu" name="stokKodu" class="form-control" placeholder="Stok kodu...">
+                                        <label for="stokAdi">Stok Barkod/ Adı</label>
+                                        <input id="stokAdi" name="stokAdi" class="form-control" placeholder="Stok barkod/ad...">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -131,10 +135,7 @@
                     </article>
                 </div>
 
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-success" onclick="stokAra()" style="width:100px;"><i class="fas fa-search"></i> Ara </button>
-                    <button type="submit" class="btn btn-secondary" onclick="filtreTemizle()" style="width:100px;"><i class="fas fa-eraser"></i> Temizle </button>
-                </div>
+                
             </div>
 
         </div>
@@ -157,6 +158,8 @@
                                         <th>Stok Adı</th>
                                         <th>Birim</th>
                                         <th>Miktar</th>
+                                        <th>Döviz</th>
+                                        <th>Fiyat</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableBodyStokBakiyeliListe">
@@ -168,6 +171,8 @@
                                         <th>Stok Adı</th>
                                         <th>Birim</th>
                                         <th>Miktar</th>
+                                        <th>Döviz</th>
+                                        <th>Fiyat</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -246,11 +251,13 @@
 
             for (var i = 0; i < liste.length; i++) {
                 var Data = "<tr class='row_" + i + "'>" +
-                     "<td>"+(i+1)+"</td>"+
-                     "<td>"+liste[i].stokKodu+"</td>"+
-                     "<td>"+liste[i].stokAdi+"</td>"+
-                     "<td>"+liste[i].olcuBr+"</td>"+
-                     "<td>"+liste[i].miktar+"</td>"+
+                     "<td>" + (i+1)+"</td>"+
+                     "<td>" + liste[i].stokKodu + "</td>" +
+                     "<td>" + liste[i].stokAdi + "</td>" +
+                     "<td>" + liste[i].olcuBr + "</td>" +
+                     "<td>" + liste[i].miktar + "</td>" +
+                     "<td>" + liste[i].satisDoviz + "</td>" +
+                     "<td>" + liste[i].satisFiyat + "</td>" +
                     "</tr>";
                 SetData.append(Data);
                 $("#LoadingStatus").html("  ");

@@ -32,6 +32,9 @@ namespace InnovaApp.Entities.Models.FideSiparis
         [Column("ONAYTIPI")]
         public string OnayDurum { get; set; }
 
+        [Column("KDV_DAHILHARIC")]
+        public string KdvDahil { get; set; }
+
         [Column("CARI_IL")]
         public string Il { get; set; }
 

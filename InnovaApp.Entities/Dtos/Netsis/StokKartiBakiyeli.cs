@@ -23,7 +23,7 @@ namespace InnovaApp.Entities.Dtos.Netsis
         public string OlcuBr { get; set; }
 
         public decimal? Miktar { get; set; }
-
-        //public decimal? SatisFiyat { get; set; }
+        public decimal? SatisFiyat { get; set; }
+        public string SatisDoviz { get; set; }
     }
 }

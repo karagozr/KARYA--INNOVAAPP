@@ -207,7 +207,7 @@
  </section>
 
 <div class="modal fade" id="modalIrsaliye">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4>İRSALİYE OLUŞTUR</h4>
@@ -215,34 +215,130 @@
 
             </div>
             <div class="modal-body">
-                <div>
-                    <label for="irsaliyeNo">İrsaliye Numarası</label>
-                    <input id="irsaliyeNo" class="form-control" value="">
+                <div class="row">
+                    <label for="sablonSec">Şablon Seç</label>
+                    <select id="sablonSec" name="cariSec" class="arama form-control">
+                        <option value=""
+                                data-il=""
+                                data-ilce=""
+                                data-adres=""
+                                data-telNo=""
+                                data-ePosta=""
+                                data-vergiDairesi=""
+                                data-vergiNumarasi=""
+                                data-toplamRisk="1"
+                                data-bakiye="1">
+                            -----seç-----
+                        </option>
+                        @foreach (var item in Model.EIrsaliyeSablonlar)
+                        {
+                            <option value="@item.Aciklama"
+                                    data-plakaNo="@item.PlakaNo"
+                                    data-cariIl="@item.CariIl"
+                                    data-cariIlce="@item.CariIlce"
+                                    data-cariUnvan="@item.CariUnvan"
+                                    data-cariVkn="@item.CariVknNo"
+                                    data-soforAd="@item.SoforAd"
+                                    data-soforSoyad="@item.SoforSoyad"
+                                    data-soforTckn="@item.SoforTckn"
+                                    data-ulke="@item.Ulke"
+                                    data-postakodu="@item.PostaKodu">
+                                @item.Aciklama
+                            </option>
+
+                        }
+                    </select>
                 </div>
-                <div>
-                    <label for="aciklama2">Açıklama-1</label>
-                    <input id="aciklama2" class="form-control" value="">
+                <hr />
+                <hr />
+
+                <div class="row">
+                    <div class="col-6">
+                        <div>
+                            <label for="plakaNo">Plaka No</label>
+                            <input id="plakaNo" class="form-control" value="">
+                        </div>
+                        <div>
+                            <label for="soforAd">Şöför Ad</label>
+                            <input id="soforAd" class="form-control" value="">
+                        </div>
+                        <div>
+                            <label for="soforSoyad">Şöför Soyad</label>
+                            <input id="soforSoyad" class="form-control" value="">
+                        </div>
+                        <div>
+                            <label for="soforTckn">Şöför TC</label>
+                            <input id="soforTckn" class="form-control" value="">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div>
+                            <label for="cariVkn">Taşıyıcı Firma Vkn</label>
+                            <input id="cariVkn" class="form-control" value="">
+                        </div>
+                        <div>
+                            <label for="cariUnvan">Taşıyıcı Firma Ünvan</label>
+                            <input id="cariUnvan" class="form-control" value="">
+                        </div>
+                        <div>
+                            <label for="cariIl">İl</label>
+                            <input id="cariIl" class="form-control" value="">
+                        </div>
+                        <div>
+                            <label for="cariIlce">İlçe</label>
+                            <input id="cariIlce" class="form-control" value="">
+                        </div>
+                    </div>
+
                 </div>
-                <div>
-                    <label for="aciklama3">Açıklama-2</label>
-                    <input id="aciklama3" class="form-control" value="">
+                <hr />
+                <div class="row">
+                    <div class="col-6">
+                        <div>
+                            <label for="sipTarih">Tarih</label>
+                            <input type="date" id="sipTarih" class="form-control datepicker" value="@ViewBag.tarih">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div>
+                            <label for="sevkTarih">Sevk Tarih</label>
+                            <input type="date" id="sevkTarih" class="form-control datepicker" value="@ViewBag.tarih">
+                        </div>
+
+                    </div>
                 </div>
-                <div>
-                    <label for="aciklama4">Açıklama-3</label>
-                    <input id="aciklama4" class="form-control" value="">
+                <hr />
+                <div class="row">
+                    <div class="col-6">
+                        <div>
+                            <label for="aciklama1">Açıklama -1</label>
+                            <input id="aciklama1" class="form-control" value="">
+                        </div>
+                        <div>
+                            <label for="aciklama2">Açıklama -2</label>
+                            <input id="aciklama2" class="form-control" value="">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div>
+                            <label for="aciklama3">Açıklama -3</label>
+                            <input id="aciklama3" class="form-control" value="">
+                        </div>
+                        <div>
+                            <label for="aciklama4">Açıklama -4</label>
+                            <input id="aciklama4" class="form-control" value="">
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label for="aciklama5">Açıklama-4</label>
-                    <input id="aciklama5" class="form-control" value="">
-                </div>
+
             </div>
-            <div class="modal-footer">
+                <div class="modal-footer">
 
 
-                <button type="button" data-dismiss="modal" class="btn btn-success" id="olustur">Oluştur</button>
-                <button type="button" data-dismiss="modal" class="btn btn-warning">İptal</button>
+                    <button type="button" data-dismiss="modal" class="btn btn-success" id="olustur">Oluştur</button>
+                    <button type="button" data-dismiss="modal" class="btn btn-warning">İptal</button>
+                </div>
             </div>
-        </div>
     </div>
 </div>
 
@@ -259,31 +355,35 @@
          $('#tableTalepSiparisStoklar').dataTable({
              "paging": false,
              "searching": false,
-             "ordering":false
+             "ordering": false
          });
+
+         
 
      });
 
      function IrsaliyeCevir(kod) {
-        $('#modalIrsaliye').modal('toggle')
-            .on('click', '#olustur', function (e) {
-               
-                $.ajax({
-                    type: "POST",
-                    url: "/FideSiparis/IrsaliyeNumaraSorgula?irsaliyeNo="+irsaliyeNo,
-                    //data: ,
-                    success: function (result) {
-       
-                        console.log(result.durum);
-                        if (result.durum == 0) {
-                            IrsaliyeKaydet(irsaliyeNo);
-                        } else {
-                            alert("İrsaliye kodu daha önce kullanılmış !!!");
-                        }
-                    }
-                })
+         $('#modalIrsaliye').modal('toggle')
+             .on('click', '#olustur', function (e) {
 
-            });
+                 //$.ajax({
+                 //    type: "POST",
+                 //    url: "/FideSiparis/IrsaliyeNumaraSorgula?irsaliyeNo=" + irsaliyeNo,
+                 //    //data: ,
+                 //    success: function (result) {
+
+                 //        console.log(result.durum);
+                 //        if (result.durum == 0) {
+                 //            IrsaliyeKaydet(irsaliyeNo);
+                 //        } else {
+                 //            alert("İrsaliye kodu daha önce kullanılmış !!!");
+                 //        }
+                 //    }
+                 //})
+
+                 IrsaliyeKaydet(irsaliyeNo);
+
+             });
      }
 
      var irsaliyeNo = "";
@@ -298,83 +398,150 @@
              }
          }
 
-         irsaliyeNo=ek+value;
-         $("#irsaliyeNo").val(ek+value);
-         
+         irsaliyeNo = ek + value;
+         $("#irsaliyeNo").val(ek + value);
+
 
      });
 
-        //public class IrsaliyeBilgilerModel
-        //{
-        //public string IrsaliyeNo { get; set; }
-        //public string BelgeNo { get; set; }
-        //public IrsaliyeDetayBilgilerModel IrsaliyeDetayBilgiler { get; set; }
-        //}
-        //
-        //public class IrsaliyeDetayBilgilerModel
-        //{
-        //public short Sira { get; set; }
-        //public double Miktar { get; set; }
-        //
-        //}
+     //public class IrsaliyeBilgilerModel
+     //{
+     //public string IrsaliyeNo { get; set; }
+     //public string BelgeNo { get; set; }
+     //public IrsaliyeDetayBilgilerModel IrsaliyeDetayBilgiler { get; set; }
+     //}
+     //
+     //public class IrsaliyeDetayBilgilerModel
+     //{
+     //public short Sira { get; set; }
+     //public double Miktar { get; set; }
+     //
+     //}
+
+     $("#sablonSec").on('change', function (e) {
+
+
+         var plakaNo = $(this).find(':selected').data('plakano');
+         var cariIl = $(this).find(':selected').data('cariil');
+         var cariIlce = $(this).find(':selected').data('cariilce');
+         var cariUnvan = $(this).find(':selected').data('cariunvan');
+         var cariVkn = $(this).find(':selected').data('carivkn');
+         var soforAd = $(this).find(':selected').data('soforad');
+         var soforSoyad = $(this).find(':selected').data('soforsoyad');
+         var soforTckn = $(this).find(':selected').data('sofortckn');
+         var aciklamaIrs = $(this).find(':selected').val();
+
+         $("#plakaNo").val(plakaNo);
+         $("#cariIl").val(cariIl);
+         $("#cariIlce").val(cariIlce);
+         $("#cariUnvan").val(cariUnvan);
+         $("#cariVkn").val(cariVkn);
+         $("#soforAd").val(soforAd);
+         $("#soforSoyad").val(soforSoyad);
+         $("#soforTckn").val(soforTckn);
+         $("#aciklamaIrs").val(aciklamaIrs);
+
+
+
+         $("#cariIl").val(il);
+         $("#cariIlce").val(ilce);
+         $("#cariAdres").val(adres);
+         $("#telNo").val(telNo);
+         $("#ePosta").val(ePosta);
+         $("#vergiDairesi").val(vergiDairesi);
+         $("#vergiNumarasi").val(vergiNumarasi);
+         //$("#toplamRisk").val(parseFloat(toplamRisk).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+
+
+     });
 
      function IrsaliyeKaydet(irsaliyeNo) {
          var belgeNo = $("#belgeNo").val();
+         var plakaNo = $("#plakaNo").val();
+         var cariIl = $("#cariIl").val();
+         var cariIlce = $("#cariIlce").val();
+         var cariUnvan = $("#cariUnvan").val();
+         var cariVkn = $("#cariVkn").val();
+         var soforAd = $("#soforAd").val();
+         var soforSoyad = $("#soforSoyad").val();
+         var soforTckn = $("#soforTckn").val();
+         var aciklamaIrs = $('#sablonSec').find(':selected').val();
+
+         var sipTarih = $("#sipTarih").val();
+         var sevkTarih = $("#sevkTarih").val();
+
+         var aciklama1 = $("#aciklama1").val();
          var aciklama2 = $("#aciklama2").val();
          var aciklama3 = $("#aciklama3").val();
          var aciklama4 = $("#aciklama4").val();
-         var aciklama5 = $("#aciklama5").val();
+
+         var ulke = $("#sablonSec").find(':selected').data('ulke');
+         var postaKodu = $("#sablonSec").find(':selected').data('postakodu');
 
          var table = $('#tableTalepSiparisStoklar').DataTable();
 
          var irsData = {
              "IrsaliyeNo": irsaliyeNo,
              "BelgeNo": belgeNo,
-             "Aciklama2":aciklama2,
-             "Aciklama3":aciklama3,
-             "Aciklama4":aciklama4,
-             "Aciklama5":aciklama5,
-             IrsaliyeDetayBilgiler:[]
+             "PlakaNo": plakaNo,
+              "SoforAd": soforAd,
+              "SoforSoyad": soforSoyad,
+              "SoforTckn": soforTckn,
+              "Aciklama": aciklamaIrs,
+              "CariVkn": cariVkn,
+              "CariUnvan": cariUnvan,
+              "CariIl": cariIl,
+              "CariIlce": cariIlce,
+             "Tarih": sipTarih,
+             "Ulke": ulke,
+             "PostaKodu": postaKodu,
+              "SevkTarih": sevkTarih,
+              "Aciklama1": aciklama1,
+              "Aciklama2": aciklama2,
+              "Aciklama3": aciklama3,
+              "Aciklama4": aciklama4,
+
+              IrsaliyeDetayBilgiler: []
          }
 
-         for (var i = 1; i <= table.rows().count(); i++)
-         {
-             console.log("DIŞ :"+ $("#irsaliyeMik_" + i).val() + "-" + $("#kalanMik_" + i).text());
+         for (var i = 1; i <= table.rows().count(); i++) {
+             console.log("DIŞ :" + $("#irsaliyeMik_" + i).val() + "-" + $("#kalanMik_" + i).text());
 
              if ($("#irsaliyeMik_" + i).val() > 0) {
-                 console.log("1-IF :"+ $("#irsaliyeMik_" + i).val() + "-" + $("#kalanMik_" + i).text());
+                 console.log("1-IF :" + $("#irsaliyeMik_" + i).val() + "-" + $("#kalanMik_" + i).text());
                  if (parseFloat($("#irsaliyeMik_" + i).val().toString().replace('.', ',')) > parseFloat($("#kalanMik_" + i).text())) {
-                    console.log("KALAN :"+ $("#irsaliyeMik_" + i).val() + ">" + $("#kalanMik_" + i).text());
-                    alert("Kalan miktardan fazla irsaliye edilemez !!!");
-                    return;
+                     console.log("KALAN :" + $("#irsaliyeMik_" + i).val() + ">" + $("#kalanMik_" + i).text());
+                     alert("Kalan miktardan fazla irsaliye edilemez !!!");
+                     return;
                  }
 
                  var irsKalem = {
-                    "Sira": i,
-                    "Miktar": $("#irsaliyeMik_" + i).val().toString().replace('.', ','),
+                     "Sira": i,
+                     "Miktar": $("#irsaliyeMik_" + i).val().toString().replace('.', ','),
                  }
                  irsData.IrsaliyeDetayBilgiler.push(irsKalem);
-                 
+
              }
-             
+
          }
 
-         
+
          waitingDialog.show('İrsaliyeye Çevriliyor...');
          $.ajax({
              type: "POST",
              data: irsData,
              url: "/FideSiparis/IrsaliyeKaydet",
              success: function (result) {
-         
-                if (result.durum == "1") {
-                    alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
-                    window.location.href = "/FideSiparis/SiparisListe";
-                }
-         
+
+                 if (result.durum == "1") {
+                     alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                     window.location.href = "/FideSiparis/SiparisListe";
+                 }
+
              }
          })
      }
 
-     
+
  </script>

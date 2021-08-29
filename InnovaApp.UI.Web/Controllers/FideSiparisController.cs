@@ -7,9 +7,11 @@ using InnovaApp.DataAccess.Data.FideSiparis;
 using InnovaApp.DataAccess.Data.Netsis;
 using InnovaApp.Entities.Models.FideSiparis;
 using InnovaApp.Entities.Models.FideSiparis.Innova;
+using InnovaApp.UI.Web.Helpers;
 using InnovaApp.UI.Web.Models.FideSiparis;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace InnovaApp.UI.Web.Controllers
 {
@@ -172,8 +174,15 @@ namespace InnovaApp.UI.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult SiparisKaydet(SiparisBilgilerModel siparisBilgilerModel)
+        public JsonResult SiparisKaydet(string siparisBilgiler)
         {
+            
+            var siparisBilgilerModel = JsonConvert.DeserializeObject<SiparisBilgilerModel>(siparisBilgiler, new JsonSerializerSettings
+            {
+                // Some other settings.
+                Converters = new List<JsonConverter> { DecimalConverter.Instance }
+            });
+
             if (HttpContext.Session.GetString("UserId") == null) return Json("");
             bool guncellemeVar = false;
 
@@ -249,7 +258,8 @@ namespace InnovaApp.UI.Web.Controllers
             try
             {
                 _fideSiparisRepository.Kaydet(belgeKayitListe);
-                _netsisVerilerRepository.PrBelgeKayitTeklif(siparisBilgilerModel.SiparisBaslik.BelgeNo, siparisBilgilerModel.SiparisBaslik.CariKodu);
+                _netsisVerilerRepository.PrBelgeKayitTeklif(siparisBilgilerModel.SiparisBaslik.BelgeNo, siparisBilgilerModel.SiparisBaslik.CariKodu, siparisBilgilerModel.SiparisBaslik.KdvDahil);
+
                 var Sonuc = new
                 {
                     Durum = "1",
@@ -347,8 +357,9 @@ namespace InnovaApp.UI.Web.Controllers
 
             try
             {
+
                 _fideSiparisRepository.Kaydet(belgeKayitListe);
-                _netsisVerilerRepository.PrBelgeKayitSiparis(belgeNo, baslik.CariKodu);
+                _netsisVerilerRepository.PrBelgeKayitSiparis(belgeNo, baslik.CariKodu, baslik.KdvDahil);
                 SiparisOnayIptal(belgeNo, 'B');
                 var Sonuc = new
                 {
@@ -588,7 +599,7 @@ namespace InnovaApp.UI.Web.Controllers
             var irsaliyeYetki = _userRepository.UserYetkiGetir(Convert.ToInt32(HttpContext.Session.GetString("UserId")), 40300001);
 
             ViewBag.siparisOnayYetki = (irsaliyeYetki == null ? 0 : irsaliyeYetki.Yetki) == 1 ? true : false;
-
+            ViewBag.tarih = DateTime.Today.ToString("yyyy-MM-dd");
             if (string.IsNullOrEmpty(belgeNo))
             {
                 return RedirectToAction("FideSiparis","SiparisListe");
@@ -600,7 +611,7 @@ namespace InnovaApp.UI.Web.Controllers
                 var cari = _netsisVerilerRepository.GetCariBilgi(cKodu);
                 var detay   = _netsisVerilerRepository.SiparisDetayListe(belgeNo);
                 var detayList = new List<SiparisDetayModel>();
-                
+                var eIrsSablonlar = _netsisVerilerRepository.EIrsaliyeSablonlar();
                 foreach (var item in detay)
                 {
                     detayList.Add(new SiparisDetayModel
@@ -631,25 +642,26 @@ namespace InnovaApp.UI.Web.Controllers
                 {
                     SiparisBaslik = new SiparisBaslikModel
                     {
-                        BelgeNo     = baslik.BelgeNo,
-                        CariKodu    = baslik.CariKodu,
-                        CariAdi     = baslik.CariAdi,
-                        FtirSip     = "",
-                        Aciklama    = baslik.Aciklama,
-                        Il          = baslik.Il,
-                        Ilce        = baslik.Ilce,
-                        OnayDurum   = baslik.OnayDurum,
-                        Tarih       = baslik.Tarih,
-                        Eposta      = cari.Eposta,
-                        TelNo       = cari.TelNo,
-                        VergiDairesi=cari.VergiDairesi,
-                        VergiDairesiNo=cari.VergiNumarasi
+                        BelgeNo = baslik.BelgeNo,
+                        CariKodu = baslik.CariKodu,
+                        CariAdi = baslik.CariAdi,
+                        FtirSip = "",
+                        Aciklama = baslik.Aciklama,
+                        Il = baslik.Il,
+                        Ilce = baslik.Ilce,
+                        OnayDurum = baslik.OnayDurum,
+                        Tarih = baslik.Tarih,
+                        Eposta = cari.Eposta,
+                        TelNo = cari.TelNo,
+                        VergiDairesi = cari.VergiDairesi,
+                        VergiDairesiNo = cari.VergiNumarasi
 
                     },
-                    SiparisDetay = detayList
+                    SiparisDetay = detayList,
+                    EIrsaliyeSablonlar = eIrsSablonlar
 
 
-                });;
+                }) ;
             }
         }
 
@@ -693,7 +705,7 @@ namespace InnovaApp.UI.Web.Controllers
             var baslik = _netsisVerilerRepository.Siparis(irsaliyeBilgilerModel.BelgeNo);
             var detay = _netsisVerilerRepository.SiparisDetayListe(irsaliyeBilgilerModel.BelgeNo);
             var belgeKayitListe = new List<BelgeKayit>();
-
+            var eIrsKod = _netsisVerilerRepository.YeniIrsaliyeNoGetir("3","EIR");
 
             for (int i = 0; i < detay.Count; i++)
             {
@@ -708,15 +720,19 @@ namespace InnovaApp.UI.Web.Controllers
                         Aktarim = 0,
                         SiparisNo = baslik.BelgeNo,
                         Guid = Guid.NewGuid().ToString(),
-                        BelgeNo = irsaliyeBilgilerModel.IrsaliyeNo,
+                        BelgeNo = eIrsKod,//irsaliyeBilgilerModel.IrsaliyeNo,
                         Tarih = baslik.Tarih,
                         CariKodu = baslik.CariKodu,
                         CariAdi = baslik.CariAdi,
-                        Aciklama = baslik.Aciklama,
-                        Aciklama2 = irsaliyeBilgilerModel.Aciklama2,
-                        Aciklama3 = irsaliyeBilgilerModel.Aciklama3,
-                        Aciklama4 = irsaliyeBilgilerModel.Aciklama4,
-                        Aciklama5 = irsaliyeBilgilerModel.Aciklama5,
+
+                        Aciklama = baslik.Aciklama, //UST_ACIKLAMA1
+
+                        Aciklama2 = irsaliyeBilgilerModel.Aciklama1,    //UST_ACIKLAMA2
+                        Aciklama3 = irsaliyeBilgilerModel.Aciklama2,    //UST_ACIKLAMA3
+                        Aciklama4 = irsaliyeBilgilerModel.Aciklama3,    //UST_ACIKLAMA4
+                        Aciklama5 = irsaliyeBilgilerModel.Aciklama4,    //UST_ACIKLAMA5
+
+
                         StokKodu = detay[i].StokKodu,
                         StokAdi = detay[i].StokAdi,
                         Birim = detay[i].Birim,
@@ -730,8 +746,8 @@ namespace InnovaApp.UI.Web.Controllers
                         ToplamTutarDoviz = (decimal)detay[i].ToplamTutarDoviz,
 
                         KalemAciklama = detay[i].Aciklama,
-                        KayitKullaniciId = Convert.ToInt32(HttpContext.Session.GetString("UserId")),
-                        KayitKullaniciAdi = HttpContext.Session.GetString("UserName")
+                        KayitKullaniciId = 0,
+                        KayitKullaniciAdi = baslik.Plasiyer
 
                     }
                     );
@@ -740,10 +756,51 @@ namespace InnovaApp.UI.Web.Controllers
 
             }
 
+            belgeKayitListe.Add(
+                    new BelgeKayit
+                    {
+                        FtirSip = "EIRSALIYE",
+                        Aktarim = 0,
+                        SiparisNo = baslik.BelgeNo,
+                        Guid = Guid.NewGuid().ToString(),
+                        BelgeNo = eIrsKod,
+                        Tarih = baslik.Tarih,
+                        CariKodu = baslik.CariKodu,
+                        CariAdi = baslik.CariAdi,
+
+                        Aciklama = baslik.Aciklama, //UST_ACIKLAMA1
+
+                        Aciklama2 = irsaliyeBilgilerModel.Aciklama1,    //UST_ACIKLAMA2
+                        Aciklama3 = irsaliyeBilgilerModel.Aciklama2,    //UST_ACIKLAMA3
+                        Aciklama4 = irsaliyeBilgilerModel.Aciklama3,    //UST_ACIKLAMA4
+                        Aciklama5 = irsaliyeBilgilerModel.Aciklama4,    //UST_ACIKLAMA5
+
+                        Aciklama6 = irsaliyeBilgilerModel.PlakaNo,      //UST_ACIKLAMA6
+                        Aciklama7 = irsaliyeBilgilerModel.SoforAd,      //UST_ACIKLAMA7
+                        Aciklama8 = irsaliyeBilgilerModel.SoforSoyad,   //UST_ACIKLAMA8
+                        Aciklama9 = irsaliyeBilgilerModel.SoforTckn,    //UST_ACIKLAMA9
+                        Aciklama10 = irsaliyeBilgilerModel.Aciklama,    //UST_ACIKLAMA10
+                        Aciklama11 = irsaliyeBilgilerModel.CariVkn,     //UST_ACIKLAMA11
+                        Aciklama12 = irsaliyeBilgilerModel.CariUnvan,   //UST_ACIKLAMA12
+                        Aciklama13 = irsaliyeBilgilerModel.CariIl,      //UST_ACIKLAMA13
+                        Aciklama14 = irsaliyeBilgilerModel.CariIlce,    //UST_ACIKLAMA14
+                        Aciklama15 = irsaliyeBilgilerModel.Ulke,
+                        Aciklama16 = irsaliyeBilgilerModel.PostaKodu,
+
+                        SiparisTarih = irsaliyeBilgilerModel.Tarih,     //SIPARIS_TARIHI
+                        IrsaliyeTarih = irsaliyeBilgilerModel.SevkTarih,//IRSALIYE_TARIHI
+
+
+                        KayitKullaniciId = 0,
+                        KayitKullaniciAdi = baslik.Plasiyer
+
+                    }
+                );
+
             try
             {
                 _fideSiparisRepository.Kaydet(belgeKayitListe);
-                _netsisVerilerRepository.PrBelgeKayitIrsaliye(irsaliyeBilgilerModel.IrsaliyeNo, baslik.CariKodu);
+                _netsisVerilerRepository.PrBelgeKayitIrsaliye(eIrsKod, baslik.CariKodu);
                 var Sonuc = new
                 {
                     Durum = "1",

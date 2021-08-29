@@ -87,6 +87,7 @@
                 <i class="icon-action fa fa-chevron-down"></i>
                 <span class="title">CARİ LİSTE</span>
             </a>
+            <button class="btn btn-success float-right" onclick="ExportExcel()" style="width:150px; margin-left:5px;">Excel Al </button>
         </header>
         <div class="collapse show" id="list-area" style="">
             <article class="card-body">
@@ -124,6 +125,24 @@
 
 <script type="text/javascript">
 
+    function ExportExcel() {
+
+        var table = $('#tableBodyCariBakiyeliListe');
+
+        if (table && table.length) {
+            //var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
+            $(table).table2excel({
+                exclude: ".noExl",
+                name: "Excel_Document_Name",
+                filename: "cari_rapor_" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                fileext: ".xls",
+                exclude_img: true,
+                exclude_links: true,
+                exclude_inputs: true,
+                //preserveColors: preserveColors
+            });
+        }
+    }
 
 
     $(document).ready(function () {

@@ -32,6 +32,7 @@ namespace InnovaApp.UI.Web.Controllers
                 ModelState.AddModelError("", "Kullanıcı bulunamadı");
                 ViewBag.userName = userName;
                 ViewBag.password = password;
+                ViewBag.message = "Giriş bilgileri yanlış";
                 return View();
             }
             else

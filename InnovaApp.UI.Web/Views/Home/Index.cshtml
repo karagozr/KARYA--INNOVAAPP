@@ -11,9 +11,9 @@ with font-awesome or any other icon font library -->
             <i class="nav-icon fas fa-pray"> Cari Rapor</i>
         </a>
     </div>
-
+    <br />
 }
-<br />
+
 @if (!string.IsNullOrEmpty(Context.Session.GetInt32("UserCariKodu").ToString()))
 {
     <div class="text-center">
@@ -21,9 +21,8 @@ with font-awesome or any other icon font library -->
             <i class="fas fa-universal-access"> Cari Raporum</i>
         </a>
     </div>
-
+    <br />
 }
-<br />
 @if (Context.Session.GetInt32("StokRapor") == 1)
 {
     <div class="text-center">
@@ -31,9 +30,8 @@ with font-awesome or any other icon font library -->
             <i class="fas fa-box"> Stok Rapor</i>
         </a>
     </div>
-
+    <br />
 }
-<br />
 @if (Context.Session.GetInt32("WebTeklif") == 1)
 {
     <div class="text-center">
@@ -41,9 +39,8 @@ with font-awesome or any other icon font library -->
             <i class="fas fa-edit"> Teklif İşlem</i>
         </a>
     </div>
-
+    <br />
 }
-<br />
 @if (Context.Session.GetInt32("WebSiparis") == 1)
 {
     <div class="text-center">
@@ -51,9 +48,8 @@ with font-awesome or any other icon font library -->
             <i class="fas fa-shuttle-van"> Siparis İşlem</i>
         </a>
     </div>
-
+    <br />
 }
-<br />
 @if (Context.Session.GetInt32("WebIsAkis") == 1)
 {
     <div class="text-center">
@@ -61,20 +57,17 @@ with font-awesome or any other icon font library -->
             <i class="far fa-paper-plane"> İş Akış Listesi</i>
         </a>
     </div>
-
+    <br />
 }
-<br />
-
 @if (Context.Session.GetInt32("MotoServis") == 1)
 {
     <div class="text-center">
         <a class="btn btn-info" style="width:200px;" href="/MotoServis/Liste">
-            <i class="fas fa-motorcycle"> Moto Servis Sipariş</i>
+            <i class="fas fa-motorcycle"> Siparişlerim</i>
         </a>
     </div>
-
+    <br />
 }
-<br />
 @if (Context.Session.GetInt32("MotoServisAdmin") == 1)
 {
     <div class="text-center">
@@ -82,9 +75,8 @@ with font-awesome or any other icon font library -->
             <i class="fab fa-first-order-alt"> Moto Servis Admin</i>
         </a>
     </div>
-
+    <br />
 }
-<br />
 
 
 @*<link href="/modules/Select2/select2.css" rel="stylesheet" />

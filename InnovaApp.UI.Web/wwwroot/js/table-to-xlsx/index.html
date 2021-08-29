@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Export HTML Table to xlsx Example</title>
+
+    <meta name="author" content="FrontendScript" />
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<script src="dist/jquery.table2excel.js"></script>
+    <!--Only for demo purpose - no need to add.-->
+    <link rel="stylesheet" href="demo.css" />
+	
+    <style>
+        .table-container{
+            max-width: 660px;
+            margin: 10px auto;
+        }
+        .table2excel{
+            background: #fff;
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+
+            
+        }
+        .table2excel input{
+            padding: 5px;
+            border: 1px solid #ddd;
+            color: #777;
+        }
+        .table2excel td{
+            border: 1px solid #ddd;
+            padding: 6px;
+            
+        }
+        .table2excel tr:nth-child(odd){
+            background: #f5f5f5;
+        }
+        .exportToExcel{
+            border: 0;
+            padding: 10px 15px;
+            background: #16ba4f;
+            color: #fff;
+            transition: .25s;
+        }
+        .exportToExcel:hover{
+            background: #109d41;
+            transition: .25s;
+        }
+    
+    </style>
+    
+    
+</head>
+<body>
+		
+<div class="ScriptTop">
+    <div class="rt-container">
+        <div class="col-rt-4" id="float-right">
+ 
+            <!-- Ad Here -->
+            
+        </div>
+        <div class="col-rt-2">
+            <ul>
+                <li><a href="https://frontendscript.com/export-html-table-to-xlsx-using-jquery" title="Back to tutorial page">Back to Tutorial</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<header class="ScriptHeader">
+    <div class="rt-container">
+    	<div class="col-rt-12">
+        	<div class="rt-heading">
+            	<h1>Export HTML Table to xlsx Example</h1>
+                <p>A jQuery plugin to export HTML table to Excel file,</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section>
+    <div class="rt-container">
+          <div class="col-rt-12">
+              <div class="Scriptcontent">
+            <div class="table-container">
+          <table class="table2excel" data-tableName="Test Table 1">
+			<thead>
+				<tr class="noExl"><td>This shouldn't get exported</td><td>This shouldn't get exported either</td></tr>
+				<tr><td>This Should get exported as a header</td><td>This should too</td></tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="background-color: #f8c6e1; color: #000">Data row with a <a href="#">link one</a> and <a href="#">link two</a> and color won't be exported.</td>
+					<td>Data row with an image. <img width="90px" height="auto" src="image_file.jpg" alt="image"></td></tr>
+				<tr>
+					<td>data2a with a <input tyle="text" value="text value">.</td>
+					<td>data2b with a <input tyle="text" value="second text value">.</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr><td colspan="2">This footer spans 2 cells</td></tr>
+			</tfoot>
+		</table>
+		<button class="exportToExcel">Export to XLS</button>
+
+		<table class="table2excel" data-tableName="Test Table 2">
+			<thead>
+				<tr class="noExl"><td>This shouldn't get exported</td><td>This shouldn't get exported either</td></tr>
+				<tr><td>This Should get exported as a header</td><td>This should too</td></tr>
+			</thead>
+			<tbody>
+				<tr><td>data1a</td><td>data1b</td></tr>
+				<tr><td>data2a</td><td>data2b</td></tr>
+			</tbody>
+			<tfoot>
+				<tr><td colspan="2">This footer spans 2 cells</td></tr>
+			</tfoot>
+		</table>
+		<button class="exportToExcel">Export to XLS</button>
+		
+		<table class="table2excel table2excel_with_colors" data-tableName="Test Table 3">
+			<thead>
+				<tr class="noExl"><td>This shouldn't get exported</td><td>This shouldn't get exported either</td></tr>
+				<tr><td style="background-color: green; color: #fff">This Should get exported as a header and maintain background color</td><td>This should too</td></tr>
+			</thead>
+			<tbody>
+				<tr><td style="background-color: green; color:#fff">data1a</td><td>data1b</td></tr>
+				<tr><td>data2a</td><td>data2b</td></tr>
+			</tbody>
+			<tfoot>
+				<tr><td colspan="2">This footer spans 2 cells</td></tr>
+			</tfoot>
+		</table>
+		<button class="exportToExcel">Export to XLS</button>
+
+                  </div>
+           
+    		</div>
+		</div>
+    </div>
+</section>
+     
+		<script>
+			$(function() {
+				$(".exportToExcel").click(function(e){
+					var table = $(this).prev('.table2excel');
+					if(table && table.length){
+						var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
+						$(table).table2excel({
+							exclude: ".noExl",
+							name: "Excel Document Name",
+							filename: "myFileName" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xlsx",
+							fileext: ".xlsx",
+							exclude_img: true,
+							exclude_links: true,
+							exclude_inputs: true,
+							preserveColors: preserveColors
+						});
+					}
+				});
+				
+			});
+		</script>
+
+    <!-- Analytics -->
+
+	</body>
+</html>

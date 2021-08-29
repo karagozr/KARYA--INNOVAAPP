@@ -232,6 +232,12 @@
                     <div class="card-body" style="background-color:cadetblue;">
 
                         <form id="siparisDetayGirisForm" onsubmit="return false;">
+                            <div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" value="false" id="kdvDahil">
+                                    <label class="form-check-label" for="kdvDahil" >KDV Dahil</label>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-xl-7">
                                     <div class="row">
@@ -461,10 +467,12 @@
 
     function SiparisBilgileriniYukle() {
 
-        console.log("----****----");
+        
 
         $.get("/FideSiparis/TeklifBilgileri?belgeNo=" + $("#belgeNo").val(), null, DataBind);
+        
         function DataBind(data) {
+            console.log("----****----");
             console.log(data);
             if (data == "yeni") return;
 
@@ -511,9 +519,10 @@
             console.log("DURUM : ");
             console.log(siparisBilgiler);
             TabloyaEkle(siparisBilgiler);
-
-
-            BaslikDoldur();
+            setTimeout(function () {
+                BaslikDoldur();
+            }, 500)
+            
         }
 
     }
@@ -539,6 +548,10 @@
 
 
         var _cariKod = this.value;
+        if (_cariKod == null || _cariKod == "")
+        {
+            _cariKod = siparisBilgiler.SiparisBaslik.CariKodu 
+        }
 
          $.get("/FideSiparis/CariBakiyeRisk?cariKod=" + _cariKod, null, DataBind);
         function DataBind(cariRiskBakiyeData) {
@@ -662,6 +675,7 @@
             "CariKodu": "",
             "CariAdi": "",
             "Aciklama": "",
+            "KdvDahil":""
         }, SiparisDetay: []
     };
 
@@ -939,10 +953,14 @@
             toplamTut = toplamTut + parseFloat(siparisBilgiler.SiparisDetay[i].ToplamTutar);
         }
 
-        var tRisk =  $("#cariSec").find(':selected').data('toplamrisk');
-        var toplamRisk =parseFloat(tRisk);
+        var tRisk = $("#risk").val();
+        var tRiskFloat = tRisk.split(",").join("");
+        console.log("tRiskFloat :" + tRiskFloat);
+        var toplamRisk = parseFloat(tRiskFloat);
 
-        if (toplamRisk < toplamTut) {
+        console.log(toplamRisk + " ---  " + toplamTut)
+
+        if (toplamRisk + toplamTut>0) {
 
             console.log("risk :" + toplamRisk + "toplam tutar :" + toplamTut);
 
@@ -971,6 +989,9 @@
                 siparisBilgiler.SiparisBaslik.Aciklama = _aciklama;
                 siparisBilgiler.SiparisBaslik.Guncellendi = 1;
             }
+            var kdvDahil = $("#kdvDahil").is(":checked");
+            console.log("KDV var : " + kdvDahil)
+            siparisBilgiler.SiparisBaslik.KdvDahil = kdvDahil;
 
             if (siparisBilgiler.SiparisBaslik.Aciklama == "") {
 
@@ -991,10 +1012,19 @@
                 siparisBilgiler.SiparisBaslik.Guncellendi = 1;
             }
 
+            siparisBilgiler.SiparisDetay.map((item) => {
+                item.Miktar           = parseFloat(item.Miktar          .replace(',', '.')),
+                item.Kur              = parseFloat(item.Kur             .replace(',', '.')),
+                item.BirimTutar       = parseFloat(item.BirimTutar      .replace(',', '.')),
+                item.BirimTutarDoviz  = parseFloat(item.BirimTutarDoviz .replace(',', '.')),
+                item.ToplamTutar      = parseFloat(item.ToplamTutar     .replace(',', '.')),
+                item.ToplamTutarDoviz = parseFloat(item.ToplamTutarDoviz.replace(',', '.'))
+            });
+
+            
             $.ajax({
                 type: "POST",
-                url: "/FideSiparis/SiparisKaydet",
-                data: siparisBilgiler,
+                url: "/FideSiparis/SiparisKaydet?siparisBilgiler="+JSON.stringify(siparisBilgiler),
                 success: function (result) {
                     //console.log(result)
                     if (result.durum == -1) {
@@ -1058,7 +1088,7 @@
                         //console.log(result)
                         if (result.durum == -1) {
                             console.log(result.mesaj);
-                            alert("İşlem Sırasında hata oluştu");
+                            alert("İşlem Sırasında hata oluştu\n", result.mesaj);
                         }
                         else if (result.durum == 0) {
                             waitingDialog.hide();

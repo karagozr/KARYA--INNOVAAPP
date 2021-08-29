@@ -75,7 +75,7 @@ namespace InnovaApp.DataAccess.Data.Netsis
         }
 
         public List<StokKarti> StokBul(Expression<Func<StokKarti, bool>> filtre = null) 
-            => filtre==null? _netsisContext.StokKarti.ToList() : _netsisContext.StokKarti.Where(filtre).ToList();
+            => filtre==null? _netsisContext.StokKarti.Take(100).ToList() : _netsisContext.StokKarti.Where(filtre).Take(100).ToList();
 
         public List<StokGrubu> StokGrublari() => _netsisContext.StokGrubu.ToList();
 

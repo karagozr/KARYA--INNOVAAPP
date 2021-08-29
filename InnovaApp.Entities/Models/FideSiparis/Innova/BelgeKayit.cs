@@ -40,6 +40,12 @@ namespace InnovaApp.Entities.Models.FideSiparis.Innova
         [Column("CARI_ADI")]
         public string CariAdi { get; set; }
 
+        [Column("SIPARIS_TARIHI")]
+        public DateTime? SiparisTarih { get; set; }
+
+        [Column("IRSALIYE_TARIHI")]
+        public DateTime? IrsaliyeTarih { get; set; }
+
         [Column("UST_ACIKLAMA1")]
         public string Aciklama { get; set; }
 
@@ -54,6 +60,39 @@ namespace InnovaApp.Entities.Models.FideSiparis.Innova
 
         [Column("UST_ACIKLAMA5")]
         public string Aciklama5 { get; set; }
+
+        [Column("UST_ACIKLAMA6")]
+        public string Aciklama6 { get; set; }
+
+        [Column("UST_ACIKLAMA7")]
+        public string Aciklama7 { get; set; }
+
+        [Column("UST_ACIKLAMA8")]
+        public string Aciklama8 { get; set; }
+
+        [Column("UST_ACIKLAMA9")]
+        public string Aciklama9 { get; set; }
+
+        [Column("UST_ACIKLAMA10")]
+        public string Aciklama10 { get; set; }
+
+        [Column("UST_ACIKLAMA11")]
+        public string Aciklama11 { get; set; }
+
+        [Column("UST_ACIKLAMA12")]
+        public string Aciklama12 { get; set; }
+
+        [Column("UST_ACIKLAMA13")]
+        public string Aciklama13 { get; set; }
+
+        [Column("UST_ACIKLAMA14")]
+        public string Aciklama14 { get; set; }
+
+        [Column("UST_ACIKLAMA15")]
+        public string Aciklama15 { get; set; }
+
+        [Column("UST_ACIKLAMA16")]
+        public string Aciklama16 { get; set; }
 
         [Column("STOK_KODU")]
         public string StokKodu { get; set; }

@@ -23,16 +23,19 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <a href="../../index2.html"><b>Innova </b>APP</a>
+            <a href="/login"><b>Innova </b>APP</a>
+            
+            
         </div>
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
+                <img src="~/img/FirmaLogo.jpg">
                 <p class="login-box-msg">Kullanıcı giriş bilgilerini giriniz.</p>
 
                 <form asp-controller="Account" asp-action="Login" method="post">
                     <div class="input-group mb-3">
-                        <input type="text" name="userName" value="@ViewBag.userName"  class="form-control" placeholder="Kullanıcı Kodu...">
+                        <input type="text" name="userName" value="@ViewBag.userName" class="form-control" placeholder="Kullanıcı Kodu...">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -46,6 +49,9 @@
                                 <span class="fas fa-lock"></span>
                             </div>
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <h5 style="color:maroon;">@ViewBag.message</h5>
                     </div>
                     <div class="row">
                         <div class="col-6">
@@ -61,7 +67,7 @@
                                 <a href="#">Şifremi unuttum</a>
                             </p>
                         </div>
-                        
+
                     </div>
                     <div class="text-center">
                         <div class="form-group">
@@ -73,7 +79,7 @@
                     </div>
                 </form>
             </div>
-            <span style="color:black; font-size: 15px; text-align: center; margin-bottom:40px; display: block;">www.karagooz.com</span>
+            @*<span style="color:black; font-size: 15px; text-align: center; margin-bottom:40px; display: block;">www.karagooz.com</span>*@
         </div>
     </div>
 

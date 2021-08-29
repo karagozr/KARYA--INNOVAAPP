@@ -2,6 +2,7 @@
 using InnovaApp.Entities.Models;
 using InnovaApp.Entities.Models.FideSiparis;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -15,10 +16,12 @@ namespace InnovaApp.DataAccess.Data.FideSiparis
     {
         NetsisContext _context;
         UserRepository _userRepo;
+        NetsisDapperRepository _netsisDapperRepository;
         public NetsisVerilerRepository()
         {
             _context = new NetsisContext();
             _userRepo = new UserRepository();
+            _netsisDapperRepository = new NetsisDapperRepository();
         }
 
         public CariKart GetCariKart(Expression<Func<CariKart, bool>> filter = null)
@@ -61,23 +64,26 @@ namespace InnovaApp.DataAccess.Data.FideSiparis
             return _context.DovizKur.ToList();
         }
 
-        public void PrBelgeKayitTeklif(string belgeNo, string cariKodu)
+        public void PrBelgeKayitTeklif(string belgeNo, string cariKodu, bool kdvDahil)
         {
             using (var context = new NetsisContext())
             {
+                var kdvKod = kdvDahil ? 'E' : 'H';
                 SqlParameter _belgeNo = new SqlParameter("@BelgeNo", belgeNo);
                 SqlParameter _cariKodu = new SqlParameter("@CariKodu", cariKodu);
-                context.Database.ExecuteSqlCommand("INN_PR_BELGE_KAYIT_TEKLIF @BelgeNo, @CariKodu, 'H', 'H'", _belgeNo, _cariKodu);
+                SqlParameter _kdvDahil = new SqlParameter("@KdvDahil", kdvKod);
+                context.Database.ExecuteSqlCommand("INN_PR_BELGE_KAYIT_TEKLIF @BelgeNo, @CariKodu, 'H', @KdvDahil", _belgeNo, _cariKodu, _kdvDahil);
             }
         }
 
-        public void PrBelgeKayitSiparis(string belgeNo, string cariKodu)
+        public void PrBelgeKayitSiparis(string belgeNo, string cariKodu, string kdvDahil)
         {
             using (var context = new NetsisContext())
             {
                 SqlParameter _belgeNo = new SqlParameter("@BelgeNo", belgeNo);
                 SqlParameter _cariKodu = new SqlParameter("@CariKodu", cariKodu);
-                context.Database.ExecuteSqlCommand("INN_PR_BELGE_KAYIT @BelgeNo, @CariKodu, '6', 'H'", _belgeNo, _cariKodu);
+                SqlParameter _kdvDahil = new SqlParameter("@KdvDahil", kdvDahil);
+                context.Database.ExecuteSqlCommand("INN_PR_BELGE_KAYIT_SIPARIS @BelgeNo, @CariKodu, '6', @KdvDahil", _belgeNo, _cariKodu,_kdvDahil);
             }
         }
 
@@ -379,6 +385,20 @@ namespace InnovaApp.DataAccess.Data.FideSiparis
                 context.Entry(belge).State = EntityState.Deleted;
                 context.SaveChanges();
             }
+        }
+
+        public List<EIrsaliyeSablon> EIrsaliyeSablonlar()
+        {
+
+            var val = _context.EIrsaliyeSablon.ToList();
+            return val;
+
+            //return !string.IsNullOrEmpty(stokKodu)? _context.Stok.Where(x=>x.StokKodu== stokKodu).ToList(): _context.Stok.ToList();
+        }
+
+        public string YeniIrsaliyeNoGetir(string tip,string seri)
+        {
+            return _netsisDapperRepository.GetSonIrsaliyeNo(tip, seri);
         }
 
         public void Dispose()

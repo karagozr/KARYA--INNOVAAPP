@@ -46,13 +46,20 @@ namespace InnovaApp.DataAccess.Data.Netsis
             {
 
 
-                var queryString = $" select S.STOK_KODU as StokKodu,STOK_ADI as StokAdi, OLCU_BR1 as OlcuBr,(ISNULL(B.TOP_GIRIS_MIK,0)-ISNULL(B.TOP_CIKIS_MIK,0)) as Miktar from TBLSTSABIT as S"+
+                var queryString = $" select TOP 200 S.STOK_KODU as StokKodu,STOK_ADI as StokAdi, OLCU_BR1 as OlcuBr,(ISNULL(B.TOP_GIRIS_MIK,0)-ISNULL(B.TOP_CIKIS_MIK,0)) as Miktar, " +
+                                  $"S.DOV_SATIS_FIAT as SatisFiyat, " +
+                                  $"case when s.SAT_DOV_TIP=0 then 'TL' " +
+                                  $"when s.SAT_DOV_TIP=1 then 'USD' " +
+                                  $"when s.SAT_DOV_TIP=2 then 'EUR' " +
+                                  $"when s.SAT_DOV_TIP=3 then 'GBP' " +
+                                  $"else 'DİĞER' end as SatisDoviz " +
+                                  $"from TBLSTSABIT as S"+
                                   $" left join TBLSTOKPH as B on S.STOK_KODU = B.STOK_KODU" +
-                                  $" WHERE 1=1 " ;
+                                  $" WHERE 1=1 and S.DEPO_KODU=1 " ;
 
                 var filtreStr = "";
                 if (!string.IsNullOrEmpty(stokKodu)) filtreStr  += $" and S.STOK_KODU like '{stokKodu}%'";
-                if (!string.IsNullOrEmpty(stokAdi)) filtreStr   += $" and STOK_ADI like '%{stokAdi}%'";
+                if (!string.IsNullOrEmpty(stokAdi)) filtreStr   += $" and (STOK_ADI like '%{stokAdi}%' or BARKOD1 like '%{stokAdi}%' or BARKOD2 like '%{stokAdi}%')";
                 if (!string.IsNullOrEmpty(grup)) filtreStr      += $" and GRUP_KODU ='{grup}'";
                 if (!string.IsNullOrEmpty(kod1)) filtreStr      += $" and KOD_1 ='{kod1}'";
                 if (!string.IsNullOrEmpty(kod2)) filtreStr      += $" and KOD_2 ='{kod2}'";

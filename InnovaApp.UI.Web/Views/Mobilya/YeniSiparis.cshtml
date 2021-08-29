@@ -1,0 +1,702 @@
+﻿@model InnovaApp.UI.Web.Models.FideSiparis.TeklifGirisModel
+
+<link href="/modules/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet" />
+
+<style>
+    .error {
+        color: red;
+    }
+
+    #alan {
+        font-size: 1em !important;
+    }
+
+    
+
+    tr.active td {
+        background-color: #8fc3f7;
+    }
+
+
+    .newreqtable th:last-child {
+        border-top-right-radius: 14px;
+        border-right: none;
+    }
+</style>
+
+
+
+<section class="content" id="alan">
+
+    <div class="card">
+        <header class="card-header bg-info">
+            <a href="#" data-toggle="collapse" data-target="#headerValues-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">CARİİİİİ</span>
+            </a>
+        </header>
+        <div class="collapse show" id="headerValues-area">
+            <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                <form id="siparisBaslik" method="get">
+                    <div class="row">
+                        <input id="siparisBaslikGuid" class="form-control" type="hidden" value="">
+                        <input id="siparisDataJson" class="form-control" type="hidden" value="siparisDataJson">
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="belgeNo">Belge No</label>
+                                <input id="belgeNo" type="text" value="belgeNo" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="musteriAdi">Müşteri Adı</label>
+                                <input id="musteriAdi" type="text" value="musteriAdi" class="form-control" placeholder="müşteri...">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="siparisAciklama">Açıklama</label>
+                                <input id="siparisAciklama" value="aciklama" class="form-control" placeholder="açıklama...">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="tarih">SiparisTarih</label>
+                                <input id="tarih" type="datetime" class="form-control" value="tarih" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="aciklamaDuru">Durum Açıklama</label>
+                                <input id="aciklamaDuru" class="form-control" value="durumAciklama" placeholder="durum açıklama..." readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="siparisDurum">Durum</label>
+                                <select id="siparisDurum" name="siparisDurum" value="onayDurumKodu" class="form-control" readonly="readonly">
+                                    <option value="A">BEKLEMEDE</option>
+                                    <option value="B">ONAYLANDI</option>
+                                    <option value="C">İPTAL EDİLDİ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </article>
+        </div>
+
+
+    </div>
+
+    <div class="card">
+        <header class="card-header bg-success">
+            <a href="#" data-toggle="collapse" data-target="#headerValues-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">STOK RECEÇETE</span>
+            </a>
+        </header>
+        <div class="collapse show" id="headerValues-area">
+            <article class="card-body" style="padding-bottom:1px;padding-top:15px">
+                <div class="row">
+                    <div class="col-4">
+                        <form id="siparisBaslik" method="get">
+                            <div class="row">                                
+                                <div class="col-12">
+                                    <input id="siparisBaslikGuid" class="form-control" type="hidden" value="">
+                                    <input id="siparisDataJson" class="form-control" type="hidden" value="siparisDataJson">
+                                   
+                                    <div class="form-group">
+                                        <label for="stokKodu">Stok Adi</label>
+                                        <div class="input-group">
+                                            <input id="stokKodu" type="text" value="stokKodu" class="form-control" readonly>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="StokRehberAc()">Ara</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="siparisAciklama">Açıklama</label>
+                                        <input id="siparisAciklama" value="aciklama" class="form-control" placeholder="açıklama...">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-8">
+                        <label for="tableStokRecete">Reçete Bilgileri</label>
+                        <table id="tableStokRecete" class="table table-bordered table-striped table-condensed cf">
+                            <thead>
+                                <tr>
+                                    <th>Sıra</th>
+                                    <th>Mamul Adı</th>
+                                    <th>Ham.Kodu</th>
+                                    <th>Stok</th>
+                                    <th>Miktar</th>
+                                    <th>Ozellik Id</th>
+                                    <th>Ozellik Aç.</th>
+                                    <th>Değer Aç.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyStokRecete">
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+            </article>
+        </div>
+
+
+    </div>
+
+
+    <div class="card">
+        <header class="card-header bg-secondary">
+            <a href="#" data-toggle="collapse" data-target="#list-area" aria-expanded="false" style="color:black" class="">
+                <i class="icon-action fa fa-chevron-down float-left"></i>
+            </a>
+            @*Güncellenecek yetki*@
+            @{
+                <button id="btnKalemEkle" name="btnKalemEkle" type="submit" class="btn btn-success float-left" onclick="KalemEkle()" style="width:150px; margin-left:25px;"><i class="fas fa-plus"></i> Ekle </button>
+            }
+
+            @{
+                <button id="btnKaydet" name="btnKaydet" type="submit" class="btn btn-info float-right" onclick="SiparisKaydet()" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Kaydet </button>
+
+                <button type="submit" class="btn btn-info float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Kaydet </button>
+            }
+
+
+            @*@if (ViewBag.siparisOnayYetki)
+                {
+                    <button id="btnSiparisOnayla" name="btnSiparisOnayla" class="btn btn-success float-right" onclick="SiparisOnay('B')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Siparis Onay </button>
+                    <button id="btnSiparisIptal" name="btnSiparisIptal" type="submit" class="btn btn-danger float-right" onclick="SiparisIptal('C')" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+                }
+                else
+                {
+                    <button class="btn btn-success float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Siparis Onay </button>
+                    <button type="submit" class="btn btn-danger float-right disabled" style="width:150px; margin-left:5px;"><i class="fas fa-save"></i> Sipariş İptal </button>
+                }*@
+
+        </header>
+
+        <div class="collapse show" id="list-area" style="">
+            <article class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableSiparisKalemler" class="table table-bordered table-striped table-condensed cf">
+
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>Miktar</th>
+                                <th>Döviz</th>
+                                <th>Fiyat</th>
+                                <th>Tutar</th>
+                                <th>Açıklama</th>
+                                <th style="width:120px;">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodySiparisKalemler">
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </article> <!-- card-body.// -->
+        </div> <!-- collapse .// -->
+    </div> <!-- card.// -->
+
+</section>
+
+<div class="modal fade" id="modalStokRehber">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalKalemEkleBaslik">STOK REHBERİ</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="input-group col-md-6">
+                        <input id="inputStokKoduAra" type="text" class="form-control" placeholder="Stok Kodu ..." aria-label="Stok Kodu Giriniz ..." aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="btnStokKoduAra" onclick="StokKoduIleAra()">Ara</button>
+                        </div>
+                    </div>
+                    <div class="input-group col-md-6">
+                        <input id="inputStokAdiAra" type="text" class="form-control" placeholder="Stok Adı ..." aria-label="Stok Adı Giriniz ..." aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="btnStokAdiAra" onclick="StokAdiIleAra()">Ara</button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="table-responsive text-nowrap">
+                    <table id="tableStoklar" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>Döviz</th>
+                                <th>Fiyat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyStoklar">
+                        </tbody>
+
+                    </table>
+                </div>
+                <h4 id="modalStokRehberUyari" style="color:maroon"></h4>
+            </div>
+            
+            <div class="modal-footer">
+                <input id="stokAciklama" type="text" class="form-control" value="" placeholder="Açıklama ..." style="min-width:120px" >
+                <input id="stokMiktar" type="number" class="form-control" value="0" placeholder="Miktar ..." style="min-width:100px; max-width:150px;">
+                <button type="button" class="btn btn-success" id="modalBtnStokSec">Ekle</button>
+                <button type="button" data-dismiss="modal" class="btn">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalKalemEkle">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalKalemEkleBaslik">STOK REÇETE DÜZENLE</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive text-nowrap">
+                    <table id="tableStoklar" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Mamul Adı</th>
+                                <th>Ham.Kodu</th>
+                                <th>Stok</th>
+                                <th>Miktar</th>
+                                <th>Ozellik Id</th>
+                                <th>Ozellik Aç.</th>
+                                <th>Değer Aç.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyStoklar">
+                        </tbody>
+
+                    </table>
+                </div>
+                <h4 id="modalUyari" style="color:maroon"></h4>
+            </div>
+
+            <div class="modal-footer">
+                <input id="stokAciklama" type="text" class="form-control" value="" placeholder="Açıklama ..." style="min-width:120px">
+                <input id="stokMiktar" type="number" class="form-control" value="0" placeholder="Miktar ..." style="min-width:100px; max-width:150px;">
+                <button type="button" class="btn btn-success" id="modalBtnKalemEkle">Ekle</button>
+                <button type="button" data-dismiss="modal" class="btn">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalKalemGuncelle">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>KAYDI DÜZENLE /SİL</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                <h4 id="duzenleStokAd">....</h4>
+                <label for="duzenleMiktar">Miktar</label>
+                <input id="duzenleMiktar" type="number" class="form-control" value="0" placeholder="Miktar ..." style="width:160px">
+                <label for="duzenleAciklama">Açıklama</label>
+                <input id="duzenleAciklama" type="text" class="form-control" value="0" placeholder="Açıklama ..." style="width:160px">
+                <h4 id="modalUyariDuzenle" style="color:maroon"></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="stokSil">Sil</button>
+                <button type="button" class="btn btn-info" id="stokRehberAc">Kaydet</button>
+                <button type="button" data-dismiss="modal" class="btn">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalKayitSil">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>SATIR SİL</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                Kayıt silinsin mi?
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="delete">Delete</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalRiskUyari">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>RİSK UYARI</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+            </div>
+            <div class="modal-body">
+                Cari riski var!!!!
+                Sipariş kaydedilemez.
+                Risk kontrolü yapınız.
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="gitListe">Teklife Dön</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/modules/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="/modules/jquery-validation/dist/localization/messages_tr.min.js"></script>
+<script src="/modules/jquery-validation/dist/additional-methods.min.js"></script>
+<script src="/modules/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
+<script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
+
+<script>
+
+    let index = -1;
+    let stokMiktar = 0;
+    let siparisKalemler = [];
+    let siparisData = {
+        belgeNo:"",
+        musteriAdi: "",
+        aciklama: "",
+        tarih: null,
+        detay: []
+    }
+
+    
+    $(document).ready(function () {
+        //SiparisBilgileriniYukle();
+        var siparisKalemlerJson = $('#siparisBaslik').find('input[id="siparisDataJson"]').val();
+        console.log('----', siparisKalemlerJson);
+        if (siparisKalemlerJson == "") return; 
+        var obj = JSON.parse(siparisKalemlerJson);
+        for (var i = 0; i < obj.length; i++) {
+            var siparisKalem = {
+                id       : getGuid(),
+                stokKod  : obj[i].StokKodu,
+                stokAd   : obj[i].StokAdi,
+                miktar   : obj[i].Miktar,
+                doviz    : obj[i].DovizAdi,
+                fiyat    : obj[i].BirimFiyat,
+                tutar    : obj[i].ToplamTutar,
+                aciklama : obj[i].Aciklama
+            }
+            siparisKalemler.push(siparisKalem);
+        }
+
+        StokKalemTabloyaYaz();
+        console.log(obj);
+    });
+
+
+    $("#siparisDetayGirisForm").validate({
+        rules: {
+            "stokSec": {
+                required: true,
+                valBosmu: true
+            },
+            "miktar": {
+                required: true,
+                big0: true,
+            },
+            "birimFiyatDoviz": {
+                required: true,
+                big0: true,
+            }
+        }
+    });
+
+ 
+    
+    
+
+    function StokRehberAc() {
+        $("#stokAciklama").val("");
+        $("#stokMiktar").val(0);
+
+        $('#modalStokRehber').modal('show')
+            .on('click', '#modalBtnStokSec', function (e) {
+                stokMiktar = $("#stokMiktar").val();
+                if (stokMiktar > 0) {
+                    $('#modalStokRehberUyari').text('');
+                    if (index > -1) {
+                        StokBilgileriEkle(index);
+                        index = -1;
+                        stokMiktar = 0;
+                        $('#modalStokRehber').modal('hide');
+                    } else {
+                        $('#modalStokRehberUyari').text('Listeden stok seçmelisiniz.');
+                    }
+                } else {
+                    $('#modalStokRehberUyari').text('Miktarı sıfırdan büyük olmalıdır.');
+                }
+            });
+           
+    }
+
+    function DataBind(liste) {
+
+        var SetData = $('#tableBodyStoklar');
+
+        for (var i = 0; i < liste.length; i++) {
+            var Data = "<tr id='" + i + "'>" +
+                "<td>" + "<input type = 'radio' name = 'reqradio' /> " + (i + 1) + "</td>" +
+                "<td id='stokKod_" + i + "' , data-satisFiyat='" + liste[i].dovizSatisFiyat + "', data-doviz='" + liste[i].satisDovizAdi +"'>" + liste[i].stokKodu + " </td>" +
+                "<td id='stokAd_"+i+"'      >" + liste[i].stokAdi + "</td>" +
+                "<td id='stokDoviz_" + i + "'   >" + liste[i].satisDovizAdi + "</td>" +
+                "<td id='stokFiyat_" + i + "'   >" + liste[i].dovizSatisFiyat + "</td>" +
+                "</tr>";
+            SetData.append(Data);
+            $("#LoadingStatus").html("  ");
+        }
+
+        $('#tableStoklar').DataTable({
+            "language": {
+                "lengthMenu": "Her sayfada _MENU_ kayıt",
+                "zeroRecords": "Kayıt bulunamadı",
+                "info": "Sayfa : _PAGE_ / _PAGES_",
+                "sSearch": "Listede Ara : ",
+                "filter": "Ara",
+                "infoEmpty": "Kayıt yok",
+                "infoFiltered": "(Filtrelenen toplam kayıt _MAX_)",
+                "oPaginate": {
+                    "sFirst": "İlk Kayıt",
+                    "sPrevious": "Önceki",
+                    "sNext": "Sonraki",
+                    "sLast": "Son Kayıt"
+                }
+            }
+        });
+
+        $('.dataTables_length').addClass('bs-select');
+        $('#tableStoklar tr').click(function () {
+            index = $(this).attr('id');
+            $('#tableStoklar tr').removeClass("active");
+            $(this).addClass("active");
+            $(this).find('[name="reqradio"]').prop('checked', true);
+        });
+
+    }
+
+    function StokKoduIleAra() {
+        
+        $('#tableStoklar').dataTable().fnDestroy();
+        $("#tableBodyStoklar").empty();
+
+        var aranan = $("#inputStokKoduAra").val();
+        $.get("/StokRapor/StokBulStokKoduIle?stokKod=" + aranan, DataBind);
+    }
+
+    function StokAdiIleAra() {
+        $('#tableStoklar').dataTable().fnDestroy();
+        $("#tableBodyStoklar").empty();
+        
+        var aranan = $("#inputStokAdiAra").val();
+        $.get("/StokRapor/StokBulStokAdiIle?stokAd=" + aranan, DataBind);
+    }
+
+    function StokBilgileriEkle(index) {
+        var doviz = $("#stokKod_" + index).data('doviz');
+        var fiyat = $("#stokKod_" + index).data('satisfiyat');
+        console.log("doviz", doviz);
+        console.log("fiyat", fiyat);
+
+        var siparisKalem = {
+            id      : getGuid(),
+            stokKod : $("#stokKod_" + index).text(),
+            stokAd  : $("#stokAd_" + index).text(),
+            miktar  : stokMiktar,
+            doviz   : $("#stokKod_" + index).data('doviz'),
+            fiyat: fiyat,
+            tutar: fiyat * stokMiktar,
+            aciklama: $("#stokAciklama").val()
+        }
+
+        $.get("/Mobilya/AddStokRecete?stokKodu=" + siparisKalem.stokKod + '&guid=' + getGuid(), (data) => {
+            if (!data) alert("Reçete Ekleme işlemi sırasında hata oluştu");
+
+        });
+
+
+        siparisKalemler.push(siparisKalem);
+        StokKalemTabloyaYaz();
+        console.log(siparisKalemler);
+    }
+
+    function StokReceteBilgisiGetir(guid) {
+        
+        $.get("/Mobilya/GetStokRecete?guid=" + getGuid(), ReceteData);
+
+
+        siparisKalemler.push(siparisKalem);
+        StokKalemTabloyaYaz();
+        console.log(siparisKalemler);
+    }
+
+
+    function ReceteData(liste) {
+
+        var SetData = $('#tableBodyStokRecete');
+        $("#tableBodyStokRecete").empty();
+        for (var i = 0; i < liste.length; i++) {
+            var Data = "<tr id='recete" + i + "'>" +
+                "<td>" + (i + 1)                                                 + "</td>" +
+                "<td id='mamulAdi_" + i + "'>"        + liste[i].mamulAdi        + "</td>" +
+                "<td id='hamKodu_" + i + "'>"         + liste[i].hamKodu         + "</td>" +
+                "<td id='stokAdi_" + i + "'>"         + liste[i].stokAdi         + "</td>" +
+                "<td id='miktar_" + i + "'>"          + liste[i].miktar          + "</td>" +
+                "<td id='ozellikId_" + i + "'>"       + liste[i].ozellikId       + "</td>" +
+                "<td id='ozellikAciklama_" + i + "'>" + liste[i].ozellikAciklama + "</td>" +
+                "<td id='degerAciklama_" + i + "'>" + liste[i].degerAciklama + "</td>" +
+                "<td>" + "<a class='btn btn-warning' onClick='ReceteDuzenle(\"" + siparisKalemler[i].id + "\")'><i class='far fa-edit'></i></a></td>" +
+                "</tr>";
+            SetData.append(Data);
+            $("#LoadingStatus").html("  ");
+        }
+
+    }
+
+    function StokKalemTabloyaYaz() {
+        console.log("StokKalemTabloyaYaz", siparisKalemler);
+
+        $("#tableBodySiparisKalemler").empty();
+        var SetData = $('#tableBodySiparisKalemler');
+
+        for (var i = 0; i < siparisKalemler.length; i++) {
+            var Data = "<tr id='" + siparisKalemler[i].id + "'>" +
+                "<td>" + (i + 1) + "</td>" +
+                "<td>" + siparisKalemler[i].stokKod     + "</td>" +
+                "<td>" + siparisKalemler[i].stokAd      + "</td>" +
+                "<td>" + siparisKalemler[i].miktar  + "</td>" +
+                "<td>" + siparisKalemler[i].doviz   + "</td>" +
+                "<td>" + siparisKalemler[i].fiyat   + "</td>" +
+                "<td>" + siparisKalemler[i].tutar   + "</td>" +
+                "<td>" + siparisKalemler[i].aciklama   + "</td>" +
+                "<td>" + "<a class='btn btn-warning' onClick='KalemDuzenle(\"" + siparisKalemler[i].id + "\")'><i class='far fa-edit'></i></a></td>" +
+                "</tr>";
+            SetData.append(Data);
+            //+ "<a class='btn btn-danger' onClick='KalemSil(\"" + siparisKalemler[i].id + "\")'><i class='far fa-trash-alt'></i></a>" +
+        }
+    }
+
+    function getGuid() {
+        var d = new Date().getTime();
+
+        var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+
+        return guid;
+    }
+
+    function KalemDuzenle(guid) {
+        //console.log(id, siparisKalemler);
+        var obj = siparisKalemler.find(x => x.id === id);
+        var index = siparisKalemler.findIndex(obj => obj.id == id);
+        
+    }
+
+
+    function SiparisKaydet() {
+
+        var _siparisAciklama = $('#siparisBaslik').find('input[id="siparisAciklama"]').val();
+        var _musteri = $('#siparisBaslik').find('input[id="musteriAdi"]').val();
+
+        siparisData.detay = siparisKalemler;
+
+        console.log(siparisData.detay);
+        console.log("Arr", siparisKalemler);
+
+        if (_musteri == undefined || _musteri == "" || _musteri == null) {
+            alert("Müşteri alanı boş geçilemez");
+            return;
+        }
+        if (siparisKalemler.length == 0) {
+            alert("En az bir(1) tane sipariş kalemi girmelisiniz");
+            return;
+        }
+
+        siparisData.belgeNo = $('#siparisBaslik').find('input[id="belgeNo"]').val();
+        siparisData.tarih = $('#siparisBaslik').find('input[id="tarih"]').val();
+        siparisData.musteriAdi = _musteri;
+        siparisData.aciklama = _siparisAciklama;
+        
+        console.log(siparisData);
+
+        $.ajax({
+            type: "POST",
+            url: "/MotoServis/SiparisKaydet",
+            data: siparisData,
+            success: function (result) {
+                console.log(result)
+                if (result.durum == -1) {
+                    console.log(result.mesaj);
+                    waitingDialog.hide();
+                    alert("İşlem Sırasında hata oluştu");
+                }
+                else if (result.durum == 0) {
+                    waitingDialog.hide();
+                    window.location.href = "/MotoServis/Liste";
+                } else if (result.durum == 1) {
+                    waitingDialog.hide();
+                    alert("İşlem başarılı Sipariş Listesine Yönlendiriliyorsunuz...");
+                    window.location.href = "/MotoServis/Liste";
+                }
+
+            }
+        })
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script> 

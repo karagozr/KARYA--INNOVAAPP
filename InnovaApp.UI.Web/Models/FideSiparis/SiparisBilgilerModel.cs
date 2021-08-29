@@ -68,6 +68,8 @@ namespace InnovaApp.UI.Web.Models.FideSiparis
 
         public string Plasiyer { get; set; }
 
+        public bool KdvDahil { get; set; }
+
 
     }
 
@@ -129,6 +131,8 @@ namespace InnovaApp.UI.Web.Models.FideSiparis
 
         public SiparisBaslikModel SiparisBaslik { get; set; }
         public List<SiparisDetayModel> SiparisDetay { get; set; }
+
+        public List<EIrsaliyeSablon> EIrsaliyeSablonlar { get; set; }
     }
 
 

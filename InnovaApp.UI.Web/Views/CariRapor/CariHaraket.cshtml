@@ -5,9 +5,11 @@
         <header class="card-header bg-info">
             <a href="#" data-toggle="collapse" data-target="#headerExtraValues-area" aria-expanded="false" style="color:black" class="">
                 @*collapsed*@
-                        <i class="icon-action fa fa-chevron-down"></i>
-                        <span class="title">CARi DETAYLARI</span>
-                    </a>
+                <i class="icon-action fa fa-chevron-down"></i>
+                <span class="title">CARi DETAYLARI</span>
+            </a>
+
+            <button  class="btn btn-success float-right" onclick="ExportExcel()" style="width:150px; margin-left:5px;">Excel Al </button>
         </header>
         <div class="collapse show" id="headerExtraValues-area">
             <article class="card-body" style="padding-bottom:1px;padding-top:15px">
@@ -88,7 +90,7 @@
                             <tbody id="tableBodyCariHaraketListe">
                             </tbody>
                             <tfoot>
-                                <tr>
+                                @*<tr>
                                     <th style="min-width:15px;">Sıra</th>
                                     <th style="min-width:30px;">Haraket</th>
                                     <th style="min-width:100px;">Tarih</th>
@@ -97,7 +99,7 @@
                                     <th>Borç</th>
                                     <th>Alacak</th>
                                     <th>Bakiye</th>
-                                </tr>
+                                </tr>*@
                             </tfoot>
                         </table>
                     </div>
@@ -110,7 +112,7 @@
     
 
 <div class="modal fade" id="modalFaturaIzle">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header alert-info">
                 <h4>FATURA İÇERİK</h4>
@@ -154,6 +156,25 @@
 
     <script src="/modules/mdbootstrap/js/addons/datatables.min.js"></script>
     <script>
+
+        function ExportExcel() {
+            
+            var table = $('#tableCariHaraketListe');
+
+            if (table && table.length) {
+                //var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
+                $(table).table2excel({
+                    exclude: ".noExl",
+                    name: "Excel_Document_Name",
+                    filename: "cari_rapor_" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    fileext: ".xls",
+                    exclude_img: true,
+                    exclude_links: true,
+                    exclude_inputs: true,
+                    //preserveColors: preserveColors
+                });
+            }
+        }
 
         $(document).ready(function () {
             //console.log("Cari haraket liste çalışıyor.");
